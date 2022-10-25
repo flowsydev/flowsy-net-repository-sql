@@ -26,7 +26,7 @@ PACKAGE_VERSION=$(grep -oE '<PackageVersion>(.+)</PackageVersion>' "$PROJECT_FIL
 echo
 echo
 
-read -r -s -p "API KEY for $PACKAGE_SOURCE: " API_KEY
+read -r -s -p "API Key for $PACKAGE_SOURCE: " API_KEY
 [[ -z "$API_KEY" ]] && echo "API Key is mandatory" && exit 1
 
 echo
