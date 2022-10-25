@@ -275,7 +275,7 @@ public class DbUnitOfWorkFactory : IUnitOfWorkFactory
         _connectionFactory = connectionFactory;
     }
 
-    public T Create<T>(string configurationKey = "Default") where T : IUnitOfWork
+    public T Create<T>(string dataStoreKey = "Default") where T : IUnitOfWork
     {
         IUnitOfWork? unitOfWork = null;
         
@@ -283,7 +283,7 @@ public class DbUnitOfWorkFactory : IUnitOfWorkFactory
         
         // Create IUnitOfWork instance
         if (type == typeof(ICreateInvoiceUnitOfWork))
-            unitOfWork = new CreateInvoiceUnitOfWork(_dbConnectionFactory.GetConnection(configurationKey));
+            unitOfWork = new CreateInvoiceUnitOfWork(_dbConnectionFactory.GetConnection(dataStoreKey));
 
         return (T) (unitOfWork ?? throw new NotSupportedException());
     }
