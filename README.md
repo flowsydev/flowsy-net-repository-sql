@@ -228,7 +228,7 @@ public class CustomerByEmailQueryHandler
 
 ### 5.4. Unit of Work
 The class DbUnitOfWork implements the interface IUnitOfWork defined in the package [Flowsy Repository Core](https://www.nuget.org/packages/Flowsy.Repository.Core).
-To create unit of works, we can think about a specific use case and see what repositories are involved to complete the task.
+To create units of work, we can think about a specific use case and see what repositories are involved to complete the task.
 
 For example, to create an invoice we also need to create invoice items inside an atomic operation, so first we can define the following interface:
 ```csharp
