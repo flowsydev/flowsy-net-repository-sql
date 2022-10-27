@@ -32,7 +32,7 @@ DbRepositoryConfiguration.Default = new DbRepositoryConfiguration(
     autoIdentity: true, // Auto increment primary keys
     routineConvention: new DbConvention(NamingConvention.LowerSnakeCase, "fn_", string.Empty), // fn_ prefix for stored routines
     parameterConvention: new DbConvention(NamingConvention.LowerSnakeCase, "p_", string.Empty), // p_ prefix for stored routine parameters
-    enumFormat: DbEnumFormat.Name // Use the string representation instead of the ordinal value for enums when executing queries
+    enumConvention: new DbEnumConvention(DbEnumFormat.Name, NamingConvention.PascalCase) // Use the string representation instead of the ordinal value for enums when executing queries
     );
 ```
 

@@ -13,9 +13,9 @@ public class DbEnumConvention : DbConvention
     /// Used as a fallback in a context where no convention was provided.
     /// </summary>
     public new static DbEnumConvention Default
-        => _default ??= new DbEnumConvention(DbEnumFormat.Name, NamingConvention.LowerSnakeCase, string.Empty, string.Empty);
+        => _default ??= new DbEnumConvention(DbEnumFormat.Name, NamingConvention.PascalCase, string.Empty, string.Empty);
     
-    public DbEnumConvention(DbEnumFormat format, NamingConvention naming, string prefix, string suffix) : base(naming, prefix, suffix)
+    public DbEnumConvention(DbEnumFormat format, NamingConvention naming, string prefix = "", string suffix = "") : base(naming, prefix, suffix)
     {
         Format = format;
     }
