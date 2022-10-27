@@ -41,7 +41,7 @@ public class DbRepositoryConfiguration
     /// <param name="autoIdentity">Specifies whether or not the value for the identity property will be generated automatically.</param>
     /// <param name="routineConvention">The conventions used to build names for stored routines.</param>
     /// <param name="parameterConvention">The conventions used to build names for database parameters.</param>
-    /// <param name="enumFormat">The format used to send enum values to the underlying database.</param>
+    /// <param name="enumConvention">The conventions used to send enum values to the underlying database.</param>
     /// <param name="insert">Action used to create a new entity.</param>
     /// <param name="update">Action used to update an entity.</param>
     /// <param name="patch">Action used to patch an entity.</param>
@@ -68,7 +68,7 @@ public class DbRepositoryConfiguration
         
         DbConvention? routineConvention = default,
         DbConvention? parameterConvention = default,
-        DbEnumFormat? enumFormat = default,
+        DbEnumConvention? enumConvention = default,
 
         DbRepositoryAction? insert = default,
         DbRepositoryAction? update = default,
@@ -100,7 +100,7 @@ public class DbRepositoryConfiguration
         
         _routineConvention = routineConvention;
         _parameterConvention = parameterConvention;
-        _enumFormat = enumFormat;
+        _enumConvention = enumConvention;
 
         _insert = insert;
         _update = update;
@@ -132,7 +132,7 @@ public class DbRepositoryConfiguration
 
     private DbConvention? _routineConvention;
     private DbConvention? _parameterConvention;
-    private DbEnumFormat? _enumFormat;
+    private DbEnumConvention? _enumConvention;
 
     private DbRepositoryAction? _insert;
     private DbRepositoryAction? _update;
@@ -213,12 +213,12 @@ public class DbRepositoryConfiguration
     }
 
     /// <summary>
-    /// The format used to send enum values to the underlying database.
+    /// The convention used to send enum values to the underlying database.
     /// </summary>
-    public DbEnumFormat EnumFormat
+    public DbEnumConvention EnumConvention
     {
-        get => _enumFormat ?? (this == Default ? DbEnumFormat.Name : Default.EnumFormat);
-        set => _enumFormat = value;
+        get => _enumConvention ?? (this == Default ? DbEnumConvention.Default : Default.EnumConvention);
+        set => _enumConvention = value;
     }
     
     /// <summary>

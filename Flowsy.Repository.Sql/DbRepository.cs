@@ -103,14 +103,11 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
         var parameterName = ResolveRoutineParameterName(sourcePropertyName);
         
         if (value is null)
-        {
             return new DbParameterInfo(parameterName, null, null, null, null);
-        }
-
-        if (value.GetType().IsEnum && Configuration.EnumFormat == DbEnumFormat.Name)
-            return new DbParameterInfo(parameterName, DbType.String, null, null, value.ToString());
         
-        return new DbParameterInfo(parameterName, null, null, null, value);
+        return value is Enum e 
+            ? new DbParameterInfo(parameterName, DbType.String, null, null, ResolveEnumValue(e))
+            : new DbParameterInfo(parameterName, null, null, null, value);
     }
 
     /// <summary>
