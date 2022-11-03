@@ -68,7 +68,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
             
             connection = GetConnection();
             return await connection.QueryFirstOrDefaultAsync<TIdentity>(new CommandDefinition(
-                ResolveRoutineName(action.Name), 
+                ResolveRoutineName($"{EntityName}{action.Name}"), 
                 parameters: ToDynamicParameters(properties.ExceptBy(excludedProperties)),
                 commandType: CommandType.StoredProcedure,
                 cancellationToken: cancellationToken
