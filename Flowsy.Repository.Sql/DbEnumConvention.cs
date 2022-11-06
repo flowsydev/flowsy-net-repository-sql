@@ -15,7 +15,7 @@ public class DbEnumConvention : DbConvention
     public new static DbEnumConvention Default
         => _default ??= new DbEnumConvention(DbEnumFormat.Name, NamingConvention.PascalCase, string.Empty, string.Empty);
     
-    public DbEnumConvention(DbEnumFormat format, NamingConvention naming, string prefix = "", string suffix = "") : base(naming, prefix, suffix)
+    public DbEnumConvention(DbEnumFormat format, NamingConvention? naming, string prefix = "", string suffix = "") : base(naming, prefix, suffix)
     {
         Format = format;
     }

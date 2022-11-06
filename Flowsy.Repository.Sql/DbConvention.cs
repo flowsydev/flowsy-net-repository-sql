@@ -15,7 +15,7 @@ public class DbConvention
     public static DbConvention Default
         => _default ??= new DbConvention(NamingConvention.LowerSnakeCase, string.Empty, string.Empty);
     
-    public DbConvention(NamingConvention naming, string prefix, string suffix)
+    public DbConvention(NamingConvention? naming, string prefix, string suffix)
     {
         Naming = naming;
         Prefix = prefix;
@@ -25,7 +25,7 @@ public class DbConvention
     /// <summary>
     /// Naming convention for a given object, for example: lower_snake_case, UpperPascalCase, UPPER-KEBAB-CASE. 
     /// </summary>
-    public NamingConvention Naming { get; set; }
+    public NamingConvention? Naming { get; set; }
     
     /// <summary>
     /// Text to prepend to a given object name
