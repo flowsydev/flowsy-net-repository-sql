@@ -1,5 +1,3 @@
-using Flowsy.Core;
-
 namespace Flowsy.Repository.Sql;
 
 /// <summary>
@@ -41,6 +39,7 @@ public class DbRepositoryConfiguration
     /// <param name="autoIdentity">Specifies whether or not the value for the identity property will be generated automatically.</param>
     /// <param name="routineConvention">The conventions used to build names for stored routines.</param>
     /// <param name="parameterConvention">The conventions used to build names for database parameters.</param>
+    /// <param name="dateTimeOffsetFormat">The format used for DateTimeOffset values when resolving database parameters.</param>
     /// <param name="enumConvention">The conventions used to send enum values to the underlying database.</param>
     /// <param name="insert">Action used to create a new entity.</param>
     /// <param name="update">Action used to update an entity.</param>
@@ -68,6 +67,7 @@ public class DbRepositoryConfiguration
         
         DbConvention? routineConvention = default,
         DbConvention? parameterConvention = default,
+        DbDateTimeOffsetFormat? dateTimeOffsetFormat = default,
         DbEnumConvention? enumConvention = default,
 
         DbRepositoryAction? insert = default,
@@ -100,6 +100,7 @@ public class DbRepositoryConfiguration
         
         _routineConvention = routineConvention;
         _parameterConvention = parameterConvention;
+        _dateTimeOffsetFormat = dateTimeOffsetFormat;
         _enumConvention = enumConvention;
 
         _insert = insert;
@@ -132,6 +133,7 @@ public class DbRepositoryConfiguration
 
     private DbConvention? _routineConvention;
     private DbConvention? _parameterConvention;
+    private DbDateTimeOffsetFormat? _dateTimeOffsetFormat;
     private DbEnumConvention? _enumConvention;
 
     private DbRepositoryAction? _insert;
@@ -210,6 +212,15 @@ public class DbRepositoryConfiguration
     {
         get => _parameterConvention ?? (this == Default ? DbConvention.Default : Default.ParameterConvention);
         set => _parameterConvention = value;
+    }
+
+    /// <summary>
+    /// The format used for DateTimeOffset values when resolving database parameters.
+    /// </summary>
+    public DbDateTimeOffsetFormat DateTimeOffsetFormat
+    {
+        get => _dateTimeOffsetFormat ?? (this == Default ? DbDateTimeOffsetFormat.Utc : Default.DateTimeOffsetFormat);
+        set => _dateTimeOffsetFormat = value;
     }
 
     /// <summary>
