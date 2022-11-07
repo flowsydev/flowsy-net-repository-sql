@@ -30,27 +30,4 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     /// <returns>A full parameter name like p_user_id or p_email_address.</returns>
     protected virtual string ResolveRoutineParameterName(string simpleName) =>
         $"{Configuration.ParameterConvention.Prefix}{simpleName.ApplyNamingConvention(Configuration.ParameterConvention.Naming)}{Configuration.ParameterConvention.Suffix}";
-
-    /// <summary>
-    /// Resolves the final value for an enum sent to the underlying database. 
-    /// </summary>
-    /// <param name="e">The enum value</param>
-    /// <returns>The final value sent to the underlying database.</returns>
-    protected virtual object ResolveEnumValue(Enum e)
-    {
-        var enumConvention = Configuration.EnumConvention;
-        return enumConvention.Format == DbEnumFormat.Name
-            ? $"{enumConvention.Prefix}{e.ToString()?.ApplyNamingConvention(enumConvention.Naming) ?? ResolveEnumOrdinal(e)}{enumConvention.Suffix}"
-            : ResolveEnumOrdinal(e);
-    }
-
-    protected virtual object ResolveEnumOrdinal(Enum e)
-        => e.GetTypeCode() switch
-        {
-            TypeCode.Byte => Convert.ToByte(e),
-            TypeCode.Int16 => Convert.ToInt16(e),
-            TypeCode.Int32 => Convert.ToInt32(e),
-            TypeCode.Int64 => Convert.ToInt64(e),
-            _ => e
-        };
 }

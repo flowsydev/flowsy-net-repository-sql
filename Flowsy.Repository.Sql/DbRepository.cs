@@ -104,11 +104,57 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
         
         if (value is null)
             return new DbParameterInfo(parameterName, null, null, null, null);
-        
-        return value is Enum e 
-            ? new DbParameterInfo(parameterName, DbType.String, null, null, ResolveEnumValue(e))
-            : new DbParameterInfo(parameterName, null, null, null, value);
+
+        return value switch
+        {
+            DateTime => new DbParameterInfo(parameterName, DbType.DateTime2, null, null, value),
+            DateTimeOffset => new DbParameterInfo(parameterName, DbType.DateTimeOffset, null, null, value),
+            DateOnly => new DbParameterInfo(parameterName, DbType.Date, null, null, value),
+            Enum e => new DbParameterInfo(parameterName, Configuration.EnumConvention.Format == DbEnumFormat.Ordinal ? ResolveEnumOrdinalType(e) : DbType.String, null, null, ResolveEnumValue(e)),
+            _ => new DbParameterInfo(parameterName, null, null, null, value)
+        };
     }
+
+    /// <summary>
+    /// Resolves the final value for an enum sent to the underlying database. 
+    /// </summary>
+    /// <param name="e">The enum value</param>
+    /// <returns>The final value sent to the underlying database.</returns>
+    protected virtual object ResolveEnumValue(Enum e)
+    {
+        var enumConvention = Configuration.EnumConvention;
+        return enumConvention.Format == DbEnumFormat.Name
+            ? $"{enumConvention.Prefix}{e.ToString()?.ApplyNamingConvention(enumConvention.Naming) ?? ResolveEnumOrdinalValue(e)}{enumConvention.Suffix}"
+            : ResolveEnumOrdinalValue(e);
+    }
+
+    /// <summary>
+    /// Resolves the ordinal value for an enum sent to the underlying database.
+    /// </summary>
+    /// <param name="e"></param>
+    /// <returns></returns>
+    protected virtual object ResolveEnumOrdinalValue(Enum e)
+        => e.GetTypeCode() switch
+        {
+            TypeCode.Byte => Convert.ToByte(e),
+            TypeCode.Int16 => Convert.ToInt16(e),
+            TypeCode.Int64 => Convert.ToInt64(e),
+            _ => Convert.ToInt32(e)
+        };
+    
+    /// <summary>
+    /// Resolves the type for an enum sent to the underlying database.
+    /// </summary>
+    /// <param name="e"></param>
+    /// <returns></returns>
+    protected virtual DbType ResolveEnumOrdinalType(Enum e)
+        => e.GetTypeCode() switch
+        {
+            TypeCode.Byte => DbType.Byte,
+            TypeCode.Int16 => DbType.Int16,
+            TypeCode.Int64 => DbType.Int64,
+            _ => DbType.Int32
+        };
 
     /// <summary>
     /// Executes a query against the underlying data store expecting to get a list of entities.
