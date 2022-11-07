@@ -108,7 +108,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
         return value switch
         {
             DateTime => new DbParameterInfo(parameterName, DbType.DateTime2, null, null, value),
-            DateTimeOffset dateTimeOffset => new DbParameterInfo(parameterName, DbType.DateTime2, null, null, Configuration.DateTimeOffsetFormat == DbDateTimeOffsetFormat.Utc ? dateTimeOffset.UtcDateTime : dateTimeOffset.LocalDateTime),
+            DateTimeOffset dateTimeOffset => new DbParameterInfo(parameterName, DbType.DateTimeOffset, null, null, Configuration.DateTimeOffsetFormat == DbDateTimeOffsetFormat.Utc ? dateTimeOffset.UtcDateTime : dateTimeOffset.LocalDateTime),
             DateOnly => new DbParameterInfo(parameterName, DbType.Date, null, null, value),
             Enum e => new DbParameterInfo(parameterName, Configuration.EnumConvention.Format == DbEnumFormat.Ordinal ? ResolveEnumOrdinalType(e) : DbType.String, null, null, ResolveEnumValue(e)),
             _ => new DbParameterInfo(parameterName, null, null, null, value)
