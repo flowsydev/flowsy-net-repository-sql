@@ -61,7 +61,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         IDbConnection? connection = null;
         try
         {
-            var action = Configuration.Insert;
+            var action = Configuration.Create;
             var excludedProperties = new List<string>(action.ExcludedProperties);
             if (Configuration.AutoIdentity)
                 excludedProperties.Add(IdentityPropertyName);

@@ -35,103 +35,127 @@ public class DbRepositoryAction
         /// <summary>
         /// Action used to create a new entity.
         /// </summary>
-        public static DbRepositoryAction Insert { get; set; }
-            = new("Insert");
+        public static DbRepositoryAction Create { get; set; }
+            = new(nameof(Create));
 
         /// <summary>
         /// Action used to update an entity.
         /// </summary>
         public static DbRepositoryAction Update { get; set; }
-            = new("Update");
+            = new(nameof(Update));
         
         /// <summary>
         /// Action used to patch an entity.
         /// </summary>
         public static DbRepositoryAction Patch { get; set; }
-            = new("Patch");
+            = new(nameof(Patch));
 
         /// <summary>
         /// Action used to delete an entity.
         /// </summary>
         public static DbRepositoryAction DeleteById { get; set; }
-            = new("DeleteById");
+            = new(nameof(DeleteById));
 
         /// <summary>
         /// Action used to delete multiple entities at once.
         /// </summary>
         public static DbRepositoryAction DeleteMany { get; set; }
-            = new("DeleteMany");
+            = new(nameof(DeleteMany));
         
         /// <summary>
         /// Action used to get an entity identified by a given value.
         /// </summary>
-        public static DbRepositoryAction SelectById { get; set; } 
-            = new("SelectById");
+        public static DbRepositoryAction GetById { get; set; } 
+            = new(nameof(GetById));
         
         /// <summary>
         /// Action used to get the extended version of an entity identified by a given value.
         /// </summary>
-        public static DbRepositoryAction SelectByIdExtended { get; set; } 
-            = new("SelectByIdExtended");
+        public static DbRepositoryAction GetByIdExtended { get; set; } 
+            = new(nameof(GetByIdExtended));
         
         /// <summary>
         /// Action used to get the extended and translated version of an entity identified by a given value.
         /// </summary>
-        public static DbRepositoryAction SelectByIdExtendedTranslated { get; set; } 
-            = new("SelectByIdExtendedTranslated");
+        public static DbRepositoryAction GetByIdExtendedTranslated { get; set; } 
+            = new(nameof(GetByIdExtendedTranslated));
         
         /// <summary>
         /// Action used to get the translated version of an entity identified by a given value.
         /// </summary>
-        public static DbRepositoryAction SelectByIdTranslated { get; set; } 
-            = new("SelectByIdTranslated");
+        public static DbRepositoryAction GetByIdTranslated { get; set; } 
+            = new(nameof(GetByIdTranslated));
         
         /// <summary>
-        /// Action used to get one or more entities matching a specified filter.
+        /// Action used to get a single entity matching a specified criteria.
         /// </summary>
-        public static DbRepositoryAction SelectMany { get; set; } 
-            = new("SelectMany");
+        public static DbRepositoryAction GetOne { get; set; } 
+            = new(nameof(GetOne));
         
         /// <summary>
-        /// Action used to get the extended version of one or more entities matching a specified filter.
+        /// Action used to get the extended version of a single entity matching a specified criteria.
         /// </summary>
-        public static DbRepositoryAction SelectManyExtended { get; set; } 
-            = new("SelectManyExtended");
+        public static DbRepositoryAction GetOneExtended { get; set; } 
+            = new(nameof(GetOneExtended));
         
         /// <summary>
-        /// Action used to get the extended and translated version of one or more entities matching a specified filter.
+        /// Action used to get the extended and translated version of a single entity matching a specified criteria.
         /// </summary>
-        public static DbRepositoryAction SelectManyExtendedTranslated { get; set; } 
-            = new("SelectManyExtendedTranslated");
+        public static DbRepositoryAction GetOneExtendedTranslated { get; set; } 
+            = new(nameof(GetOneExtendedTranslated));
         
         /// <summary>
-        /// Action used to get the translated version of one or more entities matching a specified filter.
+        /// Action used to get the translated version of a single entity matching a specified criteria.
         /// </summary>
-        public static DbRepositoryAction SelectManyTranslated { get; set; } 
-            = new("SelectManyTranslated");
-
-        /// <summary>
-        /// Action used to get a single entity matching a specified filter.
-        /// </summary>
-        public static DbRepositoryAction SelectOne { get; set; } 
-            = new("SelectOne");
+        public static DbRepositoryAction GetOneTranslated { get; set; } 
+            = new(nameof(GetOneTranslated));
         
         /// <summary>
-        /// Action used to get the extended version of a single entity matching a specified filter.
+        /// Action used to get one or more entities matching a specified criteria.
         /// </summary>
-        public static DbRepositoryAction SelectOneExtended { get; set; } 
-            = new("SelectOneExtended");
+        public static DbRepositoryAction GetMany { get; set; } 
+            = new(nameof(GetMany));
         
         /// <summary>
-        /// Action used to get the extended and translated version of a single entity matching a specified filter.
+        /// Action used to get a page of one or more entities matching a specified criteria.
         /// </summary>
-        public static DbRepositoryAction SelectOneExtendedTranslated { get; set; } 
-            = new("SelectOneExtendedTranslated");
+        public static DbRepositoryAction GetManyPaged { get; set; } 
+            = new(nameof(GetManyPaged));
         
         /// <summary>
-        /// Action used to get the translated version of a single entity matching a specified filter.
+        /// Action used to get the extended version of one or more entities matching a specified criteria.
         /// </summary>
-        public static DbRepositoryAction SelectOneTranslated { get; set; } 
-            = new("SelectOneTranslated");
+        public static DbRepositoryAction GetManyExtended { get; set; } 
+            = new(nameof(GetManyExtended));
+        
+        /// <summary>
+        /// Action used to get a page of the extended version of one or more entities matching a specified criteria.
+        /// </summary>
+        public static DbRepositoryAction GetManyExtendedPaged { get; set; } 
+            = new(nameof(GetManyExtendedPaged));
+        
+        /// <summary>
+        /// Action used to get the extended and translated version of one or more entities matching a specified criteria.
+        /// </summary>
+        public static DbRepositoryAction GetManyExtendedTranslated { get; set; } 
+            = new(nameof(GetManyExtendedTranslated));
+        
+        /// <summary>
+        /// Action used to get a page of the extended and translated version of one or more entities matching a specified criteria.
+        /// </summary>
+        public static DbRepositoryAction GetManyExtendedTranslatedPaged { get; set; } 
+            = new(nameof(GetManyExtendedTranslatedPaged));
+        
+        /// <summary>
+        /// Action used to get the translated version of one or more entities matching a specified criteria.
+        /// </summary>
+        public static DbRepositoryAction GetManyTranslated { get; set; } 
+            = new(nameof(GetManyTranslated));
+        
+        /// <summary>
+        /// Action used to get the translated version of one or more entities matching a specified criteria.
+        /// </summary>
+        public static DbRepositoryAction GetManyTranslatedPaged { get; set; } 
+            = new(nameof(GetManyTranslatedPaged));
     }
 }

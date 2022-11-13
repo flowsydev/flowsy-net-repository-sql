@@ -141,7 +141,7 @@ public class CustomerRepository : DbRepository<Customer, int>, ICustomerReposito
     // Search by email and return and object of type T which shall expose the same properties as CustomerExtended.  
     public Task<T?> GetOneExtendedAsync<T>(string email, CancellationToken cancellationToken)
     {
-        // The following version of the GetOneExtendedAsync method is inherited from DbRepository and accepts a generic filter as argument.
+        // The following version of the GetOneExtendedAsync method is inherited from DbRepository and accepts a dynamic criteria as argument.
         // This version of the method will resolve the name and parameters of the stored routine to execute:
         // public.fn_customer_select_one_extended(p_email text)
         // We need to create that stored routine in our database, which shall execute a query to join the required tables and return the expected result.

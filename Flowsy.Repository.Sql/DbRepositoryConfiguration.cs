@@ -41,23 +41,27 @@ public class DbRepositoryConfiguration
     /// <param name="parameterConvention">The conventions used to build names for database parameters.</param>
     /// <param name="dateTimeOffsetFormat">The format used for DateTimeOffset values when resolving database parameters.</param>
     /// <param name="enumConvention">The conventions used to send enum values to the underlying database.</param>
-    /// <param name="insert">Action used to create a new entity.</param>
+    /// <param name="create">Action used to create a new entity.</param>
     /// <param name="update">Action used to update an entity.</param>
     /// <param name="patch">Action used to patch an entity.</param>
     /// <param name="deleteById">Action used to delete an entity.Action used to patch an entity.</param>
     /// <param name="deleteMany">Action used to delete multiple entities at once.</param>
-    /// <param name="selectById">Action used to get an entity identified by a given value.</param>
-    /// <param name="selectByIdExtended">Action used to get the extended version of an entity identified by a given value.</param>
-    /// <param name="selectByIdExtendedTranslated">Action used to get the extended and translated version of an entity identified by a given value.</param>
-    /// <param name="selectByIdTranslated">Action used to get the translated version of an entity identified by a given value.</param>
-    /// <param name="selectMany">Action used to get one or more entities matching a specified filter.</param>
-    /// <param name="selectManyExtended">Action used to get the extended version of one or more entities matching a specified filter.</param>
-    /// <param name="selectManyExtendedTranslated">Action used to get the extended and translated version of one or more entities matching a specified filter.</param>
-    /// <param name="selectManyTranslated">Action used to get the translated version of one or more entities matching a specified filter.</param>
-    /// <param name="selectOne">Action used to get a single entity matching a specified filter.</param>
-    /// <param name="selectOneExtended">Action used to get the extended version of a single entity matching a specified filter.</param>
-    /// <param name="selectOneExtendedTranslated">Action used to get the extended and translated version of a single entity matching a specified filter.</param>
-    /// <param name="selectOneTranslated">Action used to get the translated version of a single entity matching a specified filter.</param>
+    /// <param name="getById">Action used to get an entity identified by a given value.</param>
+    /// <param name="getByIdExtended">Action used to get the extended version of an entity identified by a given value.</param>
+    /// <param name="getByIdExtendedTranslated">Action used to get the extended and translated version of an entity identified by a given value.</param>
+    /// <param name="getByIdTranslated">Action used to get the translated version of an entity identified by a given value.</param>
+    /// <param name="getOne">Action used to get a single entity matching a specified filter.</param>
+    /// <param name="getOneExtended">Action used to get the extended version of a single entity matching a specified filter.</param>
+    /// <param name="getOneExtendedTranslated">Action used to get the extended and translated version of a single entity matching a specified filter.</param>
+    /// <param name="getOneTranslated">Action used to get the translated version of a single entity matching a specified filter.</param>
+    /// <param name="getMany">Action used to get one or more entities matching a specified filter.</param>
+    /// <param name="getManyPaged">Action used to get a page of one or more entities matching a specified filter.</param>
+    /// <param name="getManyExtended">Action used to get the extended version of one or more entities matching a specified filter.</param>
+    /// <param name="getManyExtendedPaged">Action used to get a page of the extended version of one or more entities matching a specified filter.</param>
+    /// <param name="getManyExtendedTranslated">Action used to get the extended and translated version of one or more entities matching a specified filter.</param>
+    /// <param name="getManyExtendedTranslatedPaged">Action used to get a page of the extended and translated version of one or more entities matching a specified filter.</param>
+    /// <param name="getManyTranslated">Action used to get the translated version of one or more entities matching a specified filter.</param>
+    /// <param name="getManyTranslatedPaged">Action used to get a page of the translated version of one or more entities matching a specified filter.</param>
     public DbRepositoryConfiguration(
         string? connectionKey = default, 
         
@@ -70,26 +74,30 @@ public class DbRepositoryConfiguration
         DbDateTimeOffsetFormat? dateTimeOffsetFormat = default,
         DbEnumConvention? enumConvention = default,
 
-        DbRepositoryAction? insert = default,
+        DbRepositoryAction? create = default,
         DbRepositoryAction? update = default,
         DbRepositoryAction? patch = default,
         DbRepositoryAction? deleteById = default,
         DbRepositoryAction? deleteMany = default,
         
-        DbRepositoryAction? selectById = default,
-        DbRepositoryAction? selectByIdExtended = default,
-        DbRepositoryAction? selectByIdExtendedTranslated = default,
-        DbRepositoryAction? selectByIdTranslated = default,
+        DbRepositoryAction? getById = default,
+        DbRepositoryAction? getByIdExtended = default,
+        DbRepositoryAction? getByIdExtendedTranslated = default,
+        DbRepositoryAction? getByIdTranslated = default,
         
-        DbRepositoryAction? selectMany = default,
-        DbRepositoryAction? selectManyExtended = default,
-        DbRepositoryAction? selectManyExtendedTranslated = default,
-        DbRepositoryAction? selectManyTranslated = default,
+        DbRepositoryAction? getOne = default,
+        DbRepositoryAction? getOneExtended = default,
+        DbRepositoryAction? getOneExtendedTranslated = default,
+        DbRepositoryAction? getOneTranslated = default,
         
-        DbRepositoryAction? selectOne = default,
-        DbRepositoryAction? selectOneExtended = default,
-        DbRepositoryAction? selectOneExtendedTranslated = default,
-        DbRepositoryAction? selectOneTranslated = default
+        DbRepositoryAction? getMany = default,
+        DbRepositoryAction? getManyPaged = default,
+        DbRepositoryAction? getManyExtended = default,
+        DbRepositoryAction? getManyExtendedPaged = default,
+        DbRepositoryAction? getManyExtendedTranslated = default,
+        DbRepositoryAction? getManyExtendedTranslatedPaged = default,
+        DbRepositoryAction? getManyTranslated = default,
+        DbRepositoryAction? getManyTranslatedPaged = default
     )
     {
         _connectionKey = connectionKey;
@@ -103,26 +111,30 @@ public class DbRepositoryConfiguration
         _dateTimeOffsetFormat = dateTimeOffsetFormat;
         _enumConvention = enumConvention;
 
-        _insert = insert;
+        _create = create;
         _update = update;
         _patch = patch;
         _deleteById = deleteById;
         _deleteMany = deleteMany;
         
-        _selectById = selectById;
-        _selectByIdExtended = selectByIdExtended;
-        _selectByIdExtendedTranslated = selectByIdExtendedTranslated;
-        _selectByIdTranslated = selectByIdTranslated;
-
-        _selectMany = selectMany;
-        _selectManyExtended = selectManyExtended;
-        _selectManyExtendedTranslated = selectManyExtendedTranslated;
-        _selectManyTranslated = selectManyTranslated;
+        _getById = getById;
+        _getByIdExtended = getByIdExtended;
+        _getByIdExtendedTranslated = getByIdExtendedTranslated;
+        _getByIdTranslated = getByIdTranslated;
         
-        _selectOne = selectOne;
-        _selectOneExtended = selectOneExtended;
-        _selectOneExtendedTranslated = selectOneExtendedTranslated;
-        _selectOneTranslated = selectOneTranslated;
+        _getOne = getOne;
+        _getOneExtended = getOneExtended;
+        _getOneExtendedTranslated = getOneExtendedTranslated;
+        _getOneTranslated = getOneTranslated;
+
+        _getMany = getMany;
+        _getManyPaged = getManyPaged;
+        _getManyExtended = getManyExtended;
+        _getManyExtendedPaged = getManyExtendedPaged;
+        _getManyExtendedTranslated = getManyExtendedTranslated;
+        _getManyExtendedTranslatedPaged = getManyExtendedTranslatedPaged;
+        _getManyTranslated = getManyTranslated;
+        _getManyTranslatedPaged = getManyTranslatedPaged;
     }
 
     private string? _connectionKey;
@@ -136,30 +148,31 @@ public class DbRepositoryConfiguration
     private DbDateTimeOffsetFormat? _dateTimeOffsetFormat;
     private DbEnumConvention? _enumConvention;
 
-    private DbRepositoryAction? _insert;
+    private DbRepositoryAction? _create;
     private DbRepositoryAction? _update;
     private DbRepositoryAction? _patch;
     private DbRepositoryAction? _deleteById;
     private DbRepositoryAction? _deleteMany;
         
-    private DbRepositoryAction? _selectById;
-    private DbRepositoryAction? _selectByIdExtended;
-        
-    private DbRepositoryAction? _selectOne;
-    private DbRepositoryAction? _selectOneExtended;
-        
-    private DbRepositoryAction? _selectMany;
-    private DbRepositoryAction? _selectManyExtended;
+    private DbRepositoryAction? _getById;
+    private DbRepositoryAction? _getByIdExtendedTranslated;
+    private DbRepositoryAction? _getByIdExtended;
+    private DbRepositoryAction? _getByIdTranslated;
 
-    private DbRepositoryAction? _selectByIdTranslated;
-    private DbRepositoryAction? _selectByIdExtendedTranslated;
-        
-    private DbRepositoryAction? _selectOneTranslated;
-    private DbRepositoryAction? _selectOneExtendedTranslated;
-        
-    private DbRepositoryAction? _selectManyTranslated;
-    private DbRepositoryAction? _selectManyExtendedTranslated;
-    
+    private DbRepositoryAction? _getOne;
+    private DbRepositoryAction? _getOneExtended;
+    private DbRepositoryAction? _getOneExtendedTranslated;
+    private DbRepositoryAction? _getOneTranslated;
+
+    private DbRepositoryAction? _getMany;
+    private DbRepositoryAction? _getManyPaged;
+    private DbRepositoryAction? _getManyExtended;
+    private DbRepositoryAction? _getManyExtendedPaged;
+    private DbRepositoryAction? _getManyExtendedTranslated;
+    private DbRepositoryAction? _getManyExtendedTranslatedPaged;
+    private DbRepositoryAction? _getManyTranslated;
+    private DbRepositoryAction? _getManyTranslatedPaged;
+
     /// <summary>
     /// The database connection to be used by a repository.
     /// </summary>
@@ -235,10 +248,10 @@ public class DbRepositoryConfiguration
     /// <summary>
     /// Action used to create a new entity.
     /// </summary>
-    public DbRepositoryAction Insert
+    public DbRepositoryAction Create
     {
-        get => _insert ?? (this == Default ? DbRepositoryAction.Default.Insert : Default.Insert);
-        set => _insert = value;
+        get => _create ?? (this == Default ? DbRepositoryAction.Default.Create : Default.Create);
+        set => _create = value;
     }
     
     /// <summary>
@@ -280,108 +293,144 @@ public class DbRepositoryConfiguration
     /// <summary>
     /// Action used to get an entity identified by a given value.
     /// </summary>
-    public DbRepositoryAction SelectById
+    public DbRepositoryAction GetById
     {
-        get => _selectById ?? (this == Default ? DbRepositoryAction.Default.SelectById : Default.SelectById);
-        set => _selectById = value;
+        get => _getById ?? (this == Default ? DbRepositoryAction.Default.GetById : Default.GetById);
+        set => _getById = value;
     }
     
     /// <summary>
     /// Action used to get the extended version of an entity identified by a given value.
     /// </summary>
-    public DbRepositoryAction SelectByIdExtended
+    public DbRepositoryAction GetByIdExtended
     {
-        get => _selectByIdExtended ?? (this == Default ? DbRepositoryAction.Default.SelectByIdExtended : Default.SelectByIdExtended);
-        set => _selectByIdExtended = value;
+        get => _getByIdExtended ?? (this == Default ? DbRepositoryAction.Default.GetByIdExtended : Default.GetByIdExtended);
+        set => _getByIdExtended = value;
     }
     
     /// <summary>
     /// Action used to get the extended and translated version of an entity identified by a given value.
     /// </summary>
-    public DbRepositoryAction SelectByIdExtendedTranslated
+    public DbRepositoryAction GetByIdExtendedTranslated
     {
-        get => _selectByIdExtendedTranslated ?? (this == Default ? DbRepositoryAction.Default.SelectByIdExtendedTranslated : Default.SelectByIdExtendedTranslated);
-        set => _selectByIdExtendedTranslated = value;
+        get => _getByIdExtendedTranslated ?? (this == Default ? DbRepositoryAction.Default.GetByIdExtendedTranslated : Default.GetByIdExtendedTranslated);
+        set => _getByIdExtendedTranslated = value;
     }
     
     /// <summary>
     /// Action used to get the translated version of an entity identified by a given value.
     /// </summary>
-    public DbRepositoryAction SelectByIdTranslated
+    public DbRepositoryAction GetByIdTranslated
     {
-        get => _selectByIdTranslated ?? (this == Default ? DbRepositoryAction.Default.SelectByIdTranslated : Default.SelectByIdTranslated);
-        set => _selectByIdTranslated = value;
-    }
-
-    /// <summary>
-    /// Action used to get one or more entities matching a specified filter.
-    /// </summary>
-    public DbRepositoryAction SelectMany
-    {
-        get => _selectMany ?? (this == Default ? DbRepositoryAction.Default.SelectMany : Default.SelectMany);
-        set => _selectMany = value;
+        get => _getByIdTranslated ?? (this == Default ? DbRepositoryAction.Default.GetByIdTranslated : Default.GetByIdTranslated);
+        set => _getByIdTranslated = value;
     }
     
-    /// <summary>
-    /// Action used to get the extended version of one or more entities matching a specified filter.
-    /// </summary>
-    public DbRepositoryAction SelectManyExtended
-    {
-        get => _selectManyExtended ?? (this == Default ? DbRepositoryAction.Default.SelectManyExtended : Default.SelectManyExtended);
-        set => _selectManyExtended = value;
-    }
-    
-    /// <summary>
-    /// Action used to get the extended and translated version of one or more entities matching a specified filter.
-    /// </summary>
-    public DbRepositoryAction SelectManyExtendedTranslated
-    {
-        get => _selectManyExtendedTranslated ?? (this == Default ? DbRepositoryAction.Default.SelectManyExtendedTranslated : Default.SelectManyExtendedTranslated);
-        set => _selectManyExtendedTranslated = value;
-    }
-    
-    /// <summary>
-    /// Action used to get the translated version of one or more entities matching a specified filter.
-    /// </summary>
-    public DbRepositoryAction SelectManyTranslated
-    {
-        get => _selectManyTranslated ?? (this == Default ? DbRepositoryAction.Default.SelectManyTranslated : Default.SelectManyTranslated);
-        set => _selectManyTranslated = value;
-    }
-
     /// <summary>
     /// Action used to get a single entity matching a specified filter.
     /// </summary>
-    public DbRepositoryAction SelectOne
+    public DbRepositoryAction GetOne
     {
-        get => _selectOne ?? (this == Default ? DbRepositoryAction.Default.SelectOne : Default.SelectOne);
-        set => _selectOne = value;
+        get => _getOne ?? (this == Default ? DbRepositoryAction.Default.GetOne : Default.GetOne);
+        set => _getOne = value;
     }
     
     /// <summary>
     /// Action used to get the extended version of a single entity matching a specified filter.
     /// </summary>
-    public DbRepositoryAction SelectOneExtended
+    public DbRepositoryAction GetOneExtended
     {
-        get => _selectOneExtended ?? (this == Default ? DbRepositoryAction.Default.SelectOneExtended : Default.SelectOneExtended);
-        set => _selectOneExtended = value;
+        get => _getOneExtended ?? (this == Default ? DbRepositoryAction.Default.GetOneExtended : Default.GetOneExtended);
+        set => _getOneExtended = value;
     }
     
     /// <summary>
     /// Action used to get the extended and translated version of a single entity matching a specified filter.
     /// </summary>
-    public DbRepositoryAction SelectOneExtendedTranslated
+    public DbRepositoryAction GetOneExtendedTranslated
     {
-        get => _selectOneExtendedTranslated ?? (this == Default ? DbRepositoryAction.Default.SelectOneExtendedTranslated : Default.SelectOneExtendedTranslated);
-        set => _selectOneExtendedTranslated = value;
+        get => _getOneExtendedTranslated ?? (this == Default ? DbRepositoryAction.Default.GetOneExtendedTranslated : Default.GetOneExtendedTranslated);
+        set => _getOneExtendedTranslated = value;
     }
     
     /// <summary>
     /// Action used to get the translated version of a single entity matching a specified filter.
     /// </summary>
-    public DbRepositoryAction SelectOneTranslated
+    public DbRepositoryAction GetOneTranslated
     {
-        get => _selectOneTranslated ?? (this == Default ? DbRepositoryAction.Default.SelectOneTranslated : Default.SelectOneTranslated);
-        set => _selectOneTranslated = value;
+        get => _getOneTranslated ?? (this == Default ? DbRepositoryAction.Default.GetOneTranslated : Default.GetOneTranslated);
+        set => _getOneTranslated = value;
+    }
+
+    /// <summary>
+    /// Action used to get one or more entities matching a specified filter.
+    /// </summary>
+    public DbRepositoryAction GetMany
+    {
+        get => _getMany ?? (this == Default ? DbRepositoryAction.Default.GetMany : Default.GetMany);
+        set => _getMany = value;
+    }
+
+    /// <summary>
+    /// Action used to get a page of one or more entities matching a specified filter.
+    /// </summary>
+    public DbRepositoryAction GetManyPaged
+    {
+        get => _getManyPaged ?? (this == Default ? DbRepositoryAction.Default.GetManyPaged : Default.GetManyPaged);
+        set => _getManyPaged = value;
+    }
+    
+    /// <summary>
+    /// Action used to get the extended version of one or more entities matching a specified filter.
+    /// </summary>
+    public DbRepositoryAction GetManyExtended
+    {
+        get => _getManyExtended ?? (this == Default ? DbRepositoryAction.Default.GetManyExtended : Default.GetManyExtended);
+        set => _getManyExtended = value;
+    }
+    
+    /// <summary>
+    /// Action used to get a page of the extended version of one or more entities matching a specified filter.
+    /// </summary>
+    public DbRepositoryAction GetManyExtendedPaged
+    {
+        get => _getManyExtendedPaged ?? (this == Default ? DbRepositoryAction.Default.GetManyExtendedPaged : Default.GetManyExtendedPaged);
+        set => _getManyExtendedPaged = value;
+    }
+    
+    /// <summary>
+    /// Action used to get the extended and translated version of one or more entities matching a specified filter.
+    /// </summary>
+    public DbRepositoryAction GetManyExtendedTranslated
+    {
+        get => _getManyExtendedTranslated ?? (this == Default ? DbRepositoryAction.Default.GetManyExtendedTranslated : Default.GetManyExtendedTranslated);
+        set => _getManyExtendedTranslated = value;
+    }
+    
+    /// <summary>
+    /// Action used to get a page of the extended and translated version of one or more entities matching a specified filter.
+    /// </summary>
+    public DbRepositoryAction GetManyExtendedTranslatedPaged
+    {
+        get => _getManyExtendedTranslatedPaged ?? (this == Default ? DbRepositoryAction.Default.GetManyExtendedTranslatedPaged : Default.GetManyExtendedTranslatedPaged);
+        set => _getManyExtendedTranslatedPaged = value;
+    }
+    
+    /// <summary>
+    /// Action used to get the translated version of one or more entities matching a specified filter.
+    /// </summary>
+    public DbRepositoryAction GetManyTranslated
+    {
+        get => _getManyTranslated ?? (this == Default ? DbRepositoryAction.Default.GetManyTranslated : Default.GetManyTranslated);
+        set => _getManyTranslated = value;
+    }
+    
+    /// <summary>
+    /// Action used to get a page of the translated version of one or more entities matching a specified filter.
+    /// </summary>
+    public DbRepositoryAction GetManyTranslatedPaged
+    {
+        get => _getManyTranslatedPaged ?? (this == Default ? DbRepositoryAction.Default.GetManyTranslatedPaged : Default.GetManyTranslatedPaged);
+        set => _getManyTranslatedPaged = value;
     }
 }

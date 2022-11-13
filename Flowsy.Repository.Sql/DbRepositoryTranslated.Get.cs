@@ -19,7 +19,7 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
         CancellationToken cancellationToken
         ) where T : class
         => QueryFirstOrDefaultAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.SelectByIdTranslated.Name}"),
+            ResolveRoutineName($"{EntityName}{Configuration.GetByIdTranslated.Name}"),
             new Dictionary<string, object?>
             {
                 [IdentityPropertyName] = id ?? throw new ArgumentNullException(nameof(id)),
@@ -57,7 +57,7 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
         CancellationToken cancellationToken
         ) where T : class
         => QueryFirstOrDefaultAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.SelectByIdExtendedTranslated.Name}"),
+            ResolveRoutineName($"{EntityName}{Configuration.GetByIdExtendedTranslated.Name}"),
             new Dictionary<string, object?>
             {
                 [IdentityPropertyName] = id ?? throw new ArgumentNullException(nameof(id)),
@@ -110,7 +110,7 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
         CancellationToken cancellationToken
         ) where T : class
         => QueryFirstOrDefaultAsync<T>(
-            $"{EntityName}{Configuration.SelectOneTranslated}",
+            $"{EntityName}{Configuration.GetOneTranslated}",
             ToDynamicParameters(filter),
             CommandType.StoredProcedure,
             cancellationToken
@@ -173,7 +173,7 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
         CancellationToken cancellationToken
         ) where T : class
         => QueryFirstOrDefaultAsync<T>(
-            $"{EntityName}{Configuration.SelectOneExtendedTranslated}",
+            $"{EntityName}{Configuration.GetOneExtendedTranslated}",
             ToDynamicParameters(filter),
             CommandType.StoredProcedure,
             cancellationToken
@@ -240,7 +240,7 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
         CancellationToken cancellationToken
         ) where T : class
         => QueryAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.SelectManyTranslated.Name}"),
+            ResolveRoutineName($"{EntityName}{Configuration.GetManyTranslated.Name}"),
             new Dictionary<string, object?>(filter)
             {
                 ["CultureId"] = cultureId
@@ -312,7 +312,7 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
         CancellationToken cancellationToken
         ) where T : class
         => QueryAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.SelectManyExtendedTranslated.Name}"),
+            ResolveRoutineName($"{EntityName}{Configuration.GetManyExtendedTranslated.Name}"),
             new Dictionary<string, object?>(filter)
             {
                 ["CultureId"] = cultureId
