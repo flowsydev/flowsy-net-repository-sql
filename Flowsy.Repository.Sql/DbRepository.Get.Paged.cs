@@ -6,6 +6,7 @@ namespace Flowsy.Repository.Sql;
 public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : class, IEntity
 {
     protected EntityPageQueryResult<TCriteria, TResult> ResolvePageQueryResult<TCriteria, TResult>(
+        DbRepositoryAction action,
         EntityPageQuery<TCriteria> query,
         IEnumerable<TResult> results
         ) 
@@ -15,7 +16,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         var list = results.ToList();
         
         long? totalItemCount = null;
-        var totalCountProperty = query.TotalCountProperty ?? DbRepositoryAction.Default.PagedQueryTotalCountProperty;
+        var totalCountProperty = query.TotalCountProperty ?? action.TotalCountProperty;
         if (query.CountTotal && !string.IsNullOrEmpty(totalCountProperty) && list.Any())
         {
             var firstResult = list.First();
@@ -41,13 +42,14 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         CancellationToken cancellationToken
         )
     {
+        var action = Configuration.GetManyPaged;
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetManyPaged.Name}"),
+            ResolveRoutineName($"{EntityName}{action.Name}"),
             query.Criteria is not null ? query.Criteria : new { },
             CommandType.StoredProcedure,
             cancellationToken
             );
-        return ResolvePageQueryResult(query, results);
+        return ResolvePageQueryResult(action, query, results);
     }
 
     /// <summary>
@@ -76,13 +78,14 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         CancellationToken cancellationToken
         )
     {
+        var action = Configuration.GetManyExtendedPaged;
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetManyExtendedPaged.Name}"),
+            ResolveRoutineName($"{EntityName}{action.Name}"),
             query.Criteria is not null ? query.Criteria : new { },
             CommandType.StoredProcedure,
             cancellationToken
             );
-        return ResolvePageQueryResult(query, results);
+        return ResolvePageQueryResult(action, query, results);
     }
 
     /// <summary>

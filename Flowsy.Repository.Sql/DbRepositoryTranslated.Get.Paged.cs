@@ -28,13 +28,14 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
 
         criteria["CultureId"] = cultureId;
 
+        var action = Configuration.GetManyTranslatedPaged;
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetManyTranslatedPaged.Name}"),
+            ResolveRoutineName($"{EntityName}{action.Name}"),
             criteria,
             CommandType.StoredProcedure,
             cancellationToken
         );
-        return ResolvePageQueryResult(query, results);
+        return ResolvePageQueryResult(action, query, results);
     }
 
     /// <summary>
@@ -72,13 +73,14 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
 
         criteria["CultureId"] = cultureId;
 
+        var action = Configuration.GetManyExtendedTranslatedPaged;
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetManyExtendedTranslatedPaged.Name}"),
+            ResolveRoutineName($"{EntityName}{action.Name}"),
             criteria,
             CommandType.StoredProcedure,
             cancellationToken
         );
-        return ResolvePageQueryResult(query, results);
+        return ResolvePageQueryResult(action, query, results);
     }
 
     /// <summary>

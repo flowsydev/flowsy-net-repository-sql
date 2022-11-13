@@ -5,15 +5,10 @@ namespace Flowsy.Repository.Sql;
 /// </summary>
 public class DbRepositoryAction
 {
-    public DbRepositoryAction(string name) : this(name, Array.Empty<string>())
-    {
-        
-    }
-
-    public DbRepositoryAction(string name, IEnumerable<string> excludedProperties, string? totalCountProperty = null)
+    public DbRepositoryAction(string name, IEnumerable<string>? excludedProperties = null, string? totalCountProperty = null)
     {
         Name = name;
-        ExcludedProperties = excludedProperties;
+        ExcludedProperties = excludedProperties ?? Array.Empty<string>();
         TotalCountProperty = totalCountProperty;
     }
 
@@ -24,14 +19,14 @@ public class DbRepositoryAction
     public string Name { get; set; }
 
     /// <summary>
-    /// The name of the property within paged query results used to determine the total entity count.
-    /// </summary>
-    public string? TotalCountProperty { get; set; }
-    
-    /// <summary>
     /// The names to be excluded when reading properties of an entity involved in the action being executed.
     /// </summary>
     public IEnumerable<string> ExcludedProperties { get; set; }
+    
+    /// <summary>
+    /// The name of the property within paged query results used to determine the total entity count.
+    /// </summary>
+    public string? TotalCountProperty { get; set; }
     
     /// <summary>
     /// Holds default configurations for the actions supported by a DbRepository.
@@ -126,7 +121,7 @@ public class DbRepositoryAction
         /// Action used to get a page of one or more entities matching a specified criteria.
         /// </summary>
         public static DbRepositoryAction GetManyPaged { get; set; } 
-            = new(nameof(GetManyPaged));
+            = new(nameof(GetManyPaged), totalCountProperty: "TotalCount");
         
         /// <summary>
         /// Action used to get the extended version of one or more entities matching a specified criteria.
@@ -138,7 +133,7 @@ public class DbRepositoryAction
         /// Action used to get a page of the extended version of one or more entities matching a specified criteria.
         /// </summary>
         public static DbRepositoryAction GetManyExtendedPaged { get; set; } 
-            = new(nameof(GetManyExtendedPaged));
+            = new(nameof(GetManyExtendedPaged), totalCountProperty: "TotalCount");
         
         /// <summary>
         /// Action used to get the extended and translated version of one or more entities matching a specified criteria.
@@ -150,7 +145,7 @@ public class DbRepositoryAction
         /// Action used to get a page of the extended and translated version of one or more entities matching a specified criteria.
         /// </summary>
         public static DbRepositoryAction GetManyExtendedTranslatedPaged { get; set; } 
-            = new(nameof(GetManyExtendedTranslatedPaged));
+            = new(nameof(GetManyExtendedTranslatedPaged), totalCountProperty: "TotalCount");
         
         /// <summary>
         /// Action used to get the translated version of one or more entities matching a specified criteria.
@@ -162,12 +157,6 @@ public class DbRepositoryAction
         /// Action used to get the translated version of one or more entities matching a specified criteria.
         /// </summary>
         public static DbRepositoryAction GetManyTranslatedPaged { get; set; } 
-            = new(nameof(GetManyTranslatedPaged));
-        
-        /// <summary>
-        /// The name of the property within paged query results used to determine the total entity count.
-        /// </summary>
-        public static string PagedQueryTotalCountProperty { get; set; } 
-            = "TotalCount";
+            = new(nameof(GetManyTranslatedPaged), totalCountProperty: "TotalCount");
     }
 }
