@@ -27,9 +27,9 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
             : new Dictionary<string, object?>();
 
         criteria["CultureId"] = cultureId;
-        
+
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetManyTranslatedPaged}"),
+            ResolveRoutineName($"{EntityName}{Configuration.GetManyTranslatedPaged.Name}"),
             criteria,
             CommandType.StoredProcedure,
             cancellationToken
@@ -71,9 +71,9 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
             : new Dictionary<string, object?>();
 
         criteria["CultureId"] = cultureId;
-        
+
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetManyExtendedTranslatedPaged}"),
+            ResolveRoutineName($"{EntityName}{Configuration.GetManyExtendedTranslatedPaged.Name}"),
             criteria,
             CommandType.StoredProcedure,
             cancellationToken

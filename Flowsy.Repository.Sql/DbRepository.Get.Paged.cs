@@ -15,18 +15,14 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         var list = results.ToList();
         
         long? totalItemCount = null;
-        if (query.CountTotal && query.TotalProperty is not null && list.Any())
+        var totalCountProperty = query.TotalCountProperty ?? DbRepositoryAction.Default.PagedQueryTotalCountProperty;
+        if (query.CountTotal && !string.IsNullOrEmpty(totalCountProperty) && list.Any())
         {
             var firstResult = list.First();
-            var property = firstResult.GetType().GetProperty(query.TotalProperty);
-            if (property is not null)
-            {
-                var value = property.GetValue(firstResult);
-                if (value is not null)
-                {
-                    totalItemCount = Convert.ToInt64(value); 
-                }
-            }
+            var property = firstResult.GetType().GetProperty(totalCountProperty);
+            var value = property?.GetValue(firstResult);
+            if (value is not null)
+                totalItemCount = Convert.ToInt64(value);
         }
         
         return new EntityPageQueryResult<TCriteria, TResult>(query, list, totalItemCount);
@@ -46,7 +42,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         )
     {
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetManyPaged}"),
+            ResolveRoutineName($"{EntityName}{Configuration.GetManyPaged.Name}"),
             query.Criteria is not null ? query.Criteria : new { },
             CommandType.StoredProcedure,
             cancellationToken
@@ -81,7 +77,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         )
     {
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetManyExtendedPaged}"),
+            ResolveRoutineName($"{EntityName}{Configuration.GetManyExtendedPaged.Name}"),
             query.Criteria is not null ? query.Criteria : new { },
             CommandType.StoredProcedure,
             cancellationToken

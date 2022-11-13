@@ -10,10 +10,11 @@ public class DbRepositoryAction
         
     }
 
-    public DbRepositoryAction(string name, IEnumerable<string> excludedProperties)
+    public DbRepositoryAction(string name, IEnumerable<string> excludedProperties, string? totalCountProperty = null)
     {
         Name = name;
         ExcludedProperties = excludedProperties;
+        TotalCountProperty = totalCountProperty;
     }
 
     /// <summary>
@@ -21,6 +22,11 @@ public class DbRepositoryAction
     /// This value is intended to be used to build the name of the final stored routine to be executed in a query. 
     /// </summary>
     public string Name { get; set; }
+
+    /// <summary>
+    /// The name of the property within paged query results used to determine the total entity count.
+    /// </summary>
+    public string? TotalCountProperty { get; set; }
     
     /// <summary>
     /// The names to be excluded when reading properties of an entity involved in the action being executed.
@@ -157,5 +163,11 @@ public class DbRepositoryAction
         /// </summary>
         public static DbRepositoryAction GetManyTranslatedPaged { get; set; } 
             = new(nameof(GetManyTranslatedPaged));
+        
+        /// <summary>
+        /// The name of the property within paged query results used to determine the total entity count.
+        /// </summary>
+        public static string PagedQueryTotalCountProperty { get; set; } 
+            = "TotalCount";
     }
 }
