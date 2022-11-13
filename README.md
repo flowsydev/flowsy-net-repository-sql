@@ -16,6 +16,7 @@ These conventions can be customized and set as the default values for all the re
 * The DbRepository class is intended to be the base class of the repositories needed by the application.
   * It implements the basic functionality to execute queries.
   * Its methods are declared as virtual, so any subclass can customize the behavior as needed.
+  * Its methods supporting pagination expect the underlying routines to receive two special parameters named **offset** and **limit**.
 * Flowsy Repository Sql relies on [Dapper](https://www.nuget.org/packages/Dapper) to perform queries and map database records to entities.
 
 

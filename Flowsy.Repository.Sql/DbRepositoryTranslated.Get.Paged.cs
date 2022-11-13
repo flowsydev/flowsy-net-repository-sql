@@ -22,13 +22,17 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
         ) 
         where TCriteria : class where TResult : class
     {
+        var action = Configuration.GetManyExtendedTranslatedPaged;
         var criteria = query.Criteria is not null 
             ? query.Criteria.ToDictionary() 
             : new Dictionary<string, object?>();
 
         criteria["CultureId"] = cultureId;
-
-        var action = Configuration.GetManyTranslatedPaged;
+        
+        query.Translate(out var offset, out var limit);
+        criteria["Offset"] = offset;
+        criteria["Limit"] = limit;
+        
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
             criteria,
@@ -67,13 +71,17 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
     public async Task<EntityPageQueryResult<TCriteria, TResult>> GetManyExtendedAsync<TCriteria, TResult>(EntityPageQuery<TCriteria> query, string? cultureId,
         CancellationToken cancellationToken) where TCriteria : class where TResult : class
     {
+        var action = Configuration.GetManyExtendedTranslatedPaged;
         var criteria = query.Criteria is not null 
             ? query.Criteria.ToDictionary() 
             : new Dictionary<string, object?>();
 
         criteria["CultureId"] = cultureId;
-
-        var action = Configuration.GetManyExtendedTranslatedPaged;
+        
+        query.Translate(out var offset, out var limit);
+        criteria["Offset"] = offset;
+        criteria["Limit"] = limit;
+        
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
             criteria,

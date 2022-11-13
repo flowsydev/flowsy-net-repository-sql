@@ -1,4 +1,5 @@
 using System.Data;
+using Flowsy.Core;
 using Flowsy.Repository.Core;
 
 namespace Flowsy.Repository.Sql;
@@ -43,9 +44,16 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         )
     {
         var action = Configuration.GetManyPaged;
+        var criteria =
+            query.Criteria is not null ? query.Criteria.ToDictionary() : new Dictionary<string, object?>();
+        
+        query.Translate(out var offset, out var limit);
+        criteria["Offset"] = offset;
+        criteria["Limit"] = limit;
+        
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
-            query.Criteria is not null ? query.Criteria : new { },
+            criteria,
             CommandType.StoredProcedure,
             cancellationToken
             );
@@ -79,9 +87,16 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         )
     {
         var action = Configuration.GetManyExtendedPaged;
+        var criteria =
+            query.Criteria is not null ? query.Criteria.ToDictionary() : new Dictionary<string, object?>();
+
+        query.Translate(out var offset, out var limit);
+        criteria["Offset"] = offset;
+        criteria["Limit"] = limit;
+
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
-            query.Criteria is not null ? query.Criteria : new { },
+            criteria,
             CommandType.StoredProcedure,
             cancellationToken
             );
