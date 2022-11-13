@@ -53,7 +53,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
-            criteria,
+            (IReadOnlyDictionary<string, object?>) criteria,
             CommandType.StoredProcedure,
             cancellationToken
             );
@@ -96,7 +96,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
 
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
-            criteria,
+            (IReadOnlyDictionary<string, object?>) criteria,
             CommandType.StoredProcedure,
             cancellationToken
             );
