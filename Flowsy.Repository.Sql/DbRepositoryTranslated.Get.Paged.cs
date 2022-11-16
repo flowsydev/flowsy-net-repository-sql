@@ -15,7 +15,7 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
     /// <typeparam name="TCriteria">The type of crieteria for the query.</typeparam>
     /// <typeparam name="TResult">The type of the entities expected as the result of the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public async Task<EntityPageQueryResult<TCriteria, TResult>> GetManyAsync<TCriteria, TResult>(
+    public async Task<EntityPageQueryResult<TCriteria, TResult>> GetPageAsync<TCriteria, TResult>(
         EntityPageQuery<TCriteria> query,
         string? cultureId,
         CancellationToken cancellationToken
@@ -50,14 +50,14 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <typeparam name="TCriteria">The type of crieteria for the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public Task<EntityPageQueryResult<TCriteria, TEntityTranslated>> GetManyAsync<TCriteria>(
+    public Task<EntityPageQueryResult<TCriteria, TEntityTranslated>> GetPageAsync<TCriteria>(
         EntityPageQuery<TCriteria> query,
         string? cultureId,
         CancellationToken cancellationToken
         )
         where TCriteria : class
         =>
-            GetManyAsync<TCriteria, TEntityTranslated>(query, cultureId, cancellationToken);
+            GetPageAsync<TCriteria, TEntityTranslated>(query, cultureId, cancellationToken);
 
     /// <summary>
     /// Gets a page of the extended and translated version of one or more entities matching the specified criteria.
@@ -68,7 +68,7 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
     /// <typeparam name="TCriteria">The type of crieteria for the query.</typeparam>
     /// <typeparam name="TResult">The type of the entities expected as the result of the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public async Task<EntityPageQueryResult<TCriteria, TResult>> GetManyExtendedAsync<TCriteria, TResult>(EntityPageQuery<TCriteria> query, string? cultureId,
+    public async Task<EntityPageQueryResult<TCriteria, TResult>> GetPageExtendedAsync<TCriteria, TResult>(EntityPageQuery<TCriteria> query, string? cultureId,
         CancellationToken cancellationToken) where TCriteria : class where TResult : class
     {
         var action = Configuration.GetManyExtendedTranslatedPaged;
@@ -99,12 +99,12 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <typeparam name="TCriteria">The type of crieteria for the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public Task<EntityPageQueryResult<TCriteria, TEntityTranslated>> GetManyExtendedAsync<TCriteria>(
+    public Task<EntityPageQueryResult<TCriteria, TEntityTranslated>> GetPageExtendedAsync<TCriteria>(
         EntityPageQuery<TCriteria> query,
         string? cultureId,
         CancellationToken cancellationToken
         )
         where TCriteria : class
         =>
-            GetManyExtendedAsync<TCriteria, TEntityTranslated>(query, cultureId, cancellationToken);
+            GetPageExtendedAsync<TCriteria, TEntityTranslated>(query, cultureId, cancellationToken);
 }
