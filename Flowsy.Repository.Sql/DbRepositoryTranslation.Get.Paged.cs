@@ -4,7 +4,7 @@ using Flowsy.Repository.Core;
 
 namespace Flowsy.Repository.Sql;
 
-public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated, TIdentity>
+public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslation, TIdentity>
 {
     /// <summary>
     /// Gets a page of the translated version of the entities matching the specified criteria.
@@ -50,14 +50,14 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <typeparam name="TCriteria">The type of crieteria for the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public Task<EntityPageQueryResult<TCriteria, TEntityTranslated>> GetPageAsync<TCriteria>(
+    public Task<EntityPageQueryResult<TCriteria, TEntityTranslation>> GetPageAsync<TCriteria>(
         EntityPageQuery<TCriteria> query,
         string? cultureId,
         CancellationToken cancellationToken
         )
         where TCriteria : class
         =>
-            GetPageAsync<TCriteria, TEntityTranslated>(query, cultureId, cancellationToken);
+            GetPageAsync<TCriteria, TEntityTranslation>(query, cultureId, cancellationToken);
 
     /// <summary>
     /// Gets a page of the extended and translated version of one or more entities matching the specified criteria.
@@ -99,12 +99,12 @@ public abstract partial class DbRepositoryTranslated<TEntity, TEntityTranslated,
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <typeparam name="TCriteria">The type of crieteria for the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public Task<EntityPageQueryResult<TCriteria, TEntityTranslated>> GetPageExtendedAsync<TCriteria>(
+    public Task<EntityPageQueryResult<TCriteria, TEntityTranslation>> GetPageExtendedAsync<TCriteria>(
         EntityPageQuery<TCriteria> query,
         string? cultureId,
         CancellationToken cancellationToken
         )
         where TCriteria : class
         =>
-            GetPageExtendedAsync<TCriteria, TEntityTranslated>(query, cultureId, cancellationToken);
+            GetPageExtendedAsync<TCriteria, TEntityTranslation>(query, cultureId, cancellationToken);
 }
