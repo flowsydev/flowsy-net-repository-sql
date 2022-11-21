@@ -3,7 +3,7 @@ using Flowsy.Core;
 
 namespace Flowsy.Repository.Sql;
 
-public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslation, TIdentity> 
+public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity> 
 {
     /// <summary>
     /// Gets the translated version of the entity identified by the provided value.
@@ -36,12 +36,12 @@ public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslatio
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The entity identified by the provided value or a null value if not found.</returns>
-    public Task<TEntityTranslation?> GetByIdAsync(
+    public Task<TEntityTranslated?> GetByIdAsync(
         TIdentity id,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        => GetByIdAsync<TEntityTranslation>(id, cultureId, cancellationToken);
+        => GetByIdAsync<TEntityTranslated>(id, cultureId, cancellationToken);
     
     /// <summary>
     /// Gets the extended and translated version of the entity identified by the provided value.
@@ -74,12 +74,12 @@ public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslatio
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The entity identified by the provided value or a null value if not found.</returns>
-    public Task<TEntityTranslation?> GetByIdExtendedAsync(
+    public Task<TEntityTranslated?> GetByIdExtendedAsync(
         TIdentity id,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        => GetByIdExtendedAsync<TEntityTranslation>(id, cultureId, cancellationToken);
+        => GetByIdExtendedAsync<TEntityTranslated>(id, cultureId, cancellationToken);
     
     /// <summary>
     /// Gets the translated version of an entity matching the specified filter.
@@ -123,7 +123,7 @@ public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslatio
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The entity matching the provided filter.</returns>
-    public Task<TEntityTranslation?> GetOneAsync(
+    public Task<TEntityTranslated?> GetOneAsync(
         dynamic filter,
         string? cultureId,
         CancellationToken cancellationToken
@@ -137,12 +137,12 @@ public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslatio
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The entity matching the provided filter.</returns>
-    public Task<TEntityTranslation?> GetOneAsync(
+    public Task<TEntityTranslated?> GetOneAsync(
         IReadOnlyDictionary<string, object?> filter,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        => GetOneAsync<TEntityTranslation>(filter, cultureId, cancellationToken);
+        => GetOneAsync<TEntityTranslated>(filter, cultureId, cancellationToken);
     
     /// <summary>
     /// Gets an extended and translated version of an entity matching the specified filter.
@@ -186,7 +186,7 @@ public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslatio
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The entity matching the provided filter.</returns>
-    public Task<TEntityTranslation?> GetOneExtendedAsync(
+    public Task<TEntityTranslated?> GetOneExtendedAsync(
         dynamic filter,
         string? cultureId,
         CancellationToken cancellationToken
@@ -200,12 +200,12 @@ public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslatio
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The entity matching the provided filter.</returns>
-    public Task<TEntityTranslation?> GetOneExtendedAsync(
+    public Task<TEntityTranslated?> GetOneExtendedAsync(
         IReadOnlyDictionary<string, object?> filter,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        => GetOneExtendedAsync<TEntityTranslation>(filter, cultureId, cancellationToken);
+        => GetOneExtendedAsync<TEntityTranslated>(filter, cultureId, cancellationToken);
 
     /// <summary>
     /// Gets the translated version of one or more entities matching the specified filter.
@@ -256,12 +256,12 @@ public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslatio
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The entities matching the provided filter.</returns>
-    public Task<IEnumerable<TEntityTranslation>> GetManyAsync(
+    public Task<IEnumerable<TEntityTranslated>> GetManyAsync(
         dynamic filter,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        => GetManyAsync<TEntityTranslation>(
+        => GetManyAsync<TEntityTranslated>(
             ((object) filter).ToReadonlyDictionary(),
             cultureId,
             cancellationToken
@@ -274,12 +274,12 @@ public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslatio
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The entities matching the provided filter.</returns>
-    public Task<IEnumerable<TEntityTranslation>> GetManyAsync(
+    public Task<IEnumerable<TEntityTranslated>> GetManyAsync(
         IReadOnlyDictionary<string, object?> filter,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        => GetManyAsync<TEntityTranslation>(filter, cultureId, cancellationToken);
+        => GetManyAsync<TEntityTranslated>(filter, cultureId, cancellationToken);
 
     /// <summary>
     /// Gets the extended and translated version of one or more entities matching the specified filter.
@@ -328,12 +328,12 @@ public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslatio
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The entities matching the provided filter.</returns>
-    public Task<IEnumerable<TEntityTranslation>> GetManyExtendedAsync(
+    public Task<IEnumerable<TEntityTranslated>> GetManyExtendedAsync(
         dynamic filter,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        => GetManyExtendedAsync<TEntityTranslation>(
+        => GetManyExtendedAsync<TEntityTranslated>(
             ((object) filter).ToReadonlyDictionary(),
             cultureId,
             cancellationToken
@@ -346,12 +346,12 @@ public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslatio
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The entities matching the provided filter.</returns>
-    public Task<IEnumerable<TEntityTranslation>> GetManyExtendedAsync(
+    public Task<IEnumerable<TEntityTranslated>> GetManyExtendedAsync(
         IReadOnlyDictionary<string, object?> filter,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        => GetManyExtendedAsync<TEntityTranslation>(
+        => GetManyExtendedAsync<TEntityTranslated>(
             filter,
             cultureId,
             cancellationToken

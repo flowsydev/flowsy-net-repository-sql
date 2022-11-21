@@ -7,19 +7,19 @@ namespace Flowsy.Repository.Sql;
 /// Provides the implementation of a repository which data store is a SQL database and which entities can be translated to a given culture.
 /// </summary>
 /// <typeparam name="TEntity">The type of the main entity.</typeparam>
-/// <typeparam name="TEntityTranslation">The type of the entity translation.</typeparam>
+/// <typeparam name="TEntityTranslated">The type of the translated entity.</typeparam>
 /// <typeparam name="TIdentity">The type of the underlying unique identifier.</typeparam>
-public abstract partial class DbRepositoryTranslation<TEntity, TEntityTranslation, TIdentity> :
+public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity> :
     DbRepository<TEntity, TIdentity>,
-    IRepositoryTranslation<TEntity, TEntityTranslation, TIdentity>
+    IRepository<TEntity, TEntityTranslated, TIdentity>
     where TEntity : class, IEntity
-    where TEntityTranslation : class, TEntity, IEntityTranslation
+    where TEntityTranslated : class, TEntity, IEntityTranslation
 {
-    protected DbRepositoryTranslation(IDbConnectionFactory connectionFactory) : base(connectionFactory)
+    protected DbRepository(IDbConnectionFactory connectionFactory) : base(connectionFactory)
     {
     }
 
-    protected DbRepositoryTranslation(IDbTransaction transaction) : base(transaction)
+    protected DbRepository(IDbTransaction transaction) : base(transaction)
     {
     }
 }
