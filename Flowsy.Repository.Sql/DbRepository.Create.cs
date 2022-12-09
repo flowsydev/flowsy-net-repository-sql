@@ -71,6 +71,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
                 ResolveRoutineName($"{EntityName}{action.Name}"), 
                 parameters: ToDynamicParameters(properties.ExceptBy(excludedProperties)),
                 commandType: CommandType.StoredProcedure,
+                transaction: Transaction,
                 cancellationToken: cancellationToken
             ));
         }
