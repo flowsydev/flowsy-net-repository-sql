@@ -239,6 +239,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
                 sql,
                 param,
                 commandType: commandType,
+                transaction: Transaction,
                 cancellationToken: cancellationToken
                 ));
         }
@@ -336,6 +337,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
                 sql,
                 param,
                 commandType: commandType,
+                transaction: Transaction,
                 cancellationToken: cancellationToken
                 ));
         }
@@ -428,6 +430,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
                 sql,
                 param,
                 commandType: commandType,
+                transaction: Transaction,
                 cancellationToken: cancellationToken
                 ));
         }
