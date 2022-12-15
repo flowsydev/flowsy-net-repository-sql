@@ -17,7 +17,8 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// Creates a new instance of the repository.
     /// </summary>
     /// <param name="connectionFactory">The factory to create database connections.</param>
-    protected DbRepository(IDbConnectionFactory connectionFactory)
+    /// <param name="exceptionHandler">An optional exception handler</param>
+    protected DbRepository(IDbConnectionFactory connectionFactory, IExceptionHandler? exceptionHandler = null) : base(exceptionHandler)
     {
         ConnectionFactory = connectionFactory;
     }
@@ -26,11 +27,12 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// Creates a new instance of the repository.
     /// </summary>
     /// <param name="transaction">The transaction for the repository to participate in.</param>
-    protected DbRepository(IDbTransaction transaction)
+    /// <param name="exceptionHandler">An optional exception handler</param>
+    protected DbRepository(IDbTransaction transaction, IExceptionHandler? exceptionHandler = null) : base(exceptionHandler)
     {
         Transaction = transaction;
     }
-    
+
     /// <summary>
     /// The connection factory used to obtain a database connection if the Transaction property is not set.
     /// </summary>
@@ -243,12 +245,15 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
                 cancellationToken: cancellationToken
                 ));
         }
-        catch
+        catch(Exception exception)
         {
             if (connection is not null && !InTransaction)
                 connection.Dispose();
 
-            throw;
+            if (ExceptionHandler is null)
+                throw;
+            
+            throw ExceptionHandler.Translate(exception, new DbExecutionContext(this, sql, param, commandType, Transaction));
         }
     }
 
@@ -341,12 +346,15 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
                 cancellationToken: cancellationToken
                 ));
         }
-        catch
+        catch (Exception exception)
         {
             if (connection is not null && !InTransaction)
                 connection.Dispose();
             
-            throw;
+            if (ExceptionHandler is null)
+                throw;
+            
+            throw ExceptionHandler.Translate(exception, new DbExecutionContext(this, sql, param, commandType, Transaction));
         }
     }
 
@@ -434,12 +442,15 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
                 cancellationToken: cancellationToken
                 ));
         }
-        catch
+        catch (Exception exception)
         {
             if (connection is not null && !InTransaction)
                 connection.Dispose();
 
-            throw;
+            if (ExceptionHandler is null)
+                throw;
+            
+            throw ExceptionHandler.Translate(exception, new DbExecutionContext(this, sql, param, commandType, Transaction));
         }
     }
 }

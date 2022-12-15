@@ -59,28 +59,37 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     public override async Task<TIdentity> CreateAsync(IReadOnlyDictionary<string, object?> properties, CancellationToken cancellationToken)
     {
         IDbConnection? connection = null;
+        var action = Configuration.Create;
+        var sql = ResolveRoutineName($"{EntityName}{action.Name}");
+        DynamicParameters? parameters = null;
+        const CommandType commandType = CommandType.StoredProcedure;
+        
         try
         {
-            var action = Configuration.Create;
             var excludedProperties = new List<string>(action.ExcludedProperties);
             if (Configuration.AutoIdentity)
                 excludedProperties.Add(IdentityPropertyName);
+
+            parameters = ToDynamicParameters(properties.ExceptBy(excludedProperties));
             
             connection = GetConnection();
             return await connection.QueryFirstOrDefaultAsync<TIdentity>(new CommandDefinition(
-                ResolveRoutineName($"{EntityName}{action.Name}"), 
-                parameters: ToDynamicParameters(properties.ExceptBy(excludedProperties)),
-                commandType: CommandType.StoredProcedure,
+                sql, 
+                parameters: parameters,
+                commandType: commandType,
                 transaction: Transaction,
                 cancellationToken: cancellationToken
             ));
         }
-        catch
+        catch (Exception exception)
         {
             if (connection is not null && !InTransaction)
                 connection.Dispose();
 
-            throw;
+            if (ExceptionHandler is null)
+                throw;
+            
+            throw ExceptionHandler.Translate(exception, new DbExecutionContext(this, sql, parameters, commandType, Transaction));
         }
     }
 }
