@@ -111,7 +111,10 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         ) where T : class
         => QueryFirstOrDefaultAsync<T>(
             ResolveRoutineName($"{EntityName}{Configuration.GetOneTranslated.Name}"),
-            ToDynamicParameters(criteria),
+            new Dictionary<string, object?>(criteria)
+            {
+                ["CultureId"] = cultureId
+            },
             CommandType.StoredProcedure,
             cancellationToken
             );
@@ -174,7 +177,10 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         ) where T : class
         => QueryFirstOrDefaultAsync<T>(
             ResolveRoutineName($"{EntityName}{Configuration.GetOneExtendedTranslated.Name}"),
-            ToDynamicParameters(criteria),
+            new Dictionary<string, object?>(criteria)
+            {
+                ["CultureId"] = cultureId
+            },
             CommandType.StoredProcedure,
             cancellationToken
             );
