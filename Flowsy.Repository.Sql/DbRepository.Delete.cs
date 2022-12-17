@@ -26,27 +26,27 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     /// <summary>
     /// Deletes one or more entities matching the specified filter.
     /// </summary>
-    /// <param name="filter">An object with properties to be used as a filter to delete entities.</param>
+    /// <param name="criteria">An object with properties to be used as criteria to delete entities.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The number of affected entities.</returns>
-    public override Task<int> DeleteManyAsync(dynamic filter, CancellationToken cancellationToken) 
-        => DeleteManyAsync(((object) filter).ToReadonlyDictionary(), cancellationToken);
+    public override Task<int> DeleteManyAsync(dynamic criteria, CancellationToken cancellationToken) 
+        => DeleteManyAsync(((object) criteria).ToReadonlyDictionary(), cancellationToken);
 
     /// <summary>
-    /// Deletes one or more entities matching the specified filter.
+    /// Deletes one or more entities matching the specified criteria.
     /// </summary>
-    /// <param name="filter">The property names and values of an object that will be used as a filter to delete entities.</param>
+    /// <param name="criteria">The property names and values of an object that will be used as criteria to delete entities.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The number of affected entities.</returns>
     public override Task<int> DeleteManyAsync(
-        IReadOnlyDictionary<string, object?> filter,
+        IReadOnlyDictionary<string, object?> criteria,
         CancellationToken cancellationToken
     )
     {
         var action = Configuration.DeleteMany;
         return ExecuteAsync(
             ResolveRoutineName($"{EntityName}{action.Name}"),
-            ToDynamicParameters(filter.ExceptBy(action.ExcludedProperties)),
+            ToDynamicParameters(criteria.ExceptBy(action.ExcludedProperties)),
             CommandType.StoredProcedure, 
             cancellationToken
         );
