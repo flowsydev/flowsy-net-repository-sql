@@ -110,7 +110,7 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         CancellationToken cancellationToken
         ) where T : class
         => QueryFirstOrDefaultAsync<T>(
-            $"{EntityName}{Configuration.GetOneTranslated.Name}",
+            ResolveRoutineName($"{EntityName}{Configuration.GetOneTranslated.Name}"),
             ToDynamicParameters(criteria),
             CommandType.StoredProcedure,
             cancellationToken
@@ -173,7 +173,7 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         CancellationToken cancellationToken
         ) where T : class
         => QueryFirstOrDefaultAsync<T>(
-            $"{EntityName}{Configuration.GetOneExtendedTranslated.Name}",
+            ResolveRoutineName($"{EntityName}{Configuration.GetOneExtendedTranslated.Name}"),
             ToDynamicParameters(criteria),
             CommandType.StoredProcedure,
             cancellationToken
