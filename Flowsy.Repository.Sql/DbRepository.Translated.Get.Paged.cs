@@ -12,26 +12,21 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
     /// <param name="query">The criteria and paging options to find the entities.</param>
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TCriteria">The type of crieteria for the query.</typeparam>
+    /// <typeparam name="TQuery">The type of the query.</typeparam>
     /// <typeparam name="TResult">The type of the entities expected as the result of the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public async Task<EntityPageQueryResult<TCriteria, TResult>> GetPageAsync<TCriteria, TResult>(
-        EntityPageQuery<TCriteria> query,
+    public async Task<EntityPageQueryResult<TQuery, TResult>> GetPageAsync<TQuery, TResult>(
+        TQuery query,
         string? cultureId,
         CancellationToken cancellationToken
         ) 
-        where TCriteria : class where TResult : class
+        where TQuery : EntityPageQuery
+        where TResult : class
     {
         var action = Configuration.GetManyExtendedTranslatedPaged;
-        var criteria = query.Criteria is not null 
-            ? query.Criteria.ToDictionary() 
-            : new Dictionary<string, object?>();
-
-        criteria["CultureId"] = cultureId;
+        var criteria = ResolvePageQueryCriteria(query);
         
-        query.Translate(out var offset, out var limit);
-        criteria["Offset"] = offset;
-        criteria["Limit"] = limit;
+        criteria["CultureId"] = cultureId;
         
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
@@ -48,16 +43,16 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
     /// <param name="query">The criteria and paging options to find the entities.</param>
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TCriteria">The type of crieteria for the query.</typeparam>
+    /// <typeparam name="TQuery">The type of the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public Task<EntityPageQueryResult<TCriteria, TEntityTranslated>> GetPageAsync<TCriteria>(
-        EntityPageQuery<TCriteria> query,
+    public Task<EntityPageQueryResult<TQuery, TEntityTranslated>> GetPageAsync<TQuery>(
+        TQuery query,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        where TCriteria : class
+        where TQuery : EntityPageQuery
         =>
-            GetPageAsync<TCriteria, TEntityTranslated>(query, cultureId, cancellationToken);
+            GetPageAsync<TQuery, TEntityTranslated>(query, cultureId, cancellationToken);
 
     /// <summary>
     /// Gets a page of the extended and translated version of one or more entities matching the specified criteria.
@@ -65,22 +60,21 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
     /// <param name="query">The criteria and paging options to find the entities.</param>
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TCriteria">The type of crieteria for the query.</typeparam>
+    /// <typeparam name="TQuery">The type of the query.</typeparam>
     /// <typeparam name="TResult">The type of the entities expected as the result of the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public async Task<EntityPageQueryResult<TCriteria, TResult>> GetPageExtendedAsync<TCriteria, TResult>(EntityPageQuery<TCriteria> query, string? cultureId,
-        CancellationToken cancellationToken) where TCriteria : class where TResult : class
+    public async Task<EntityPageQueryResult<TQuery, TResult>> GetPageExtendedAsync<TQuery, TResult>(
+        TQuery query,
+        string? cultureId,
+        CancellationToken cancellationToken
+        )
+        where TQuery : EntityPageQuery
+        where TResult : class
     {
         var action = Configuration.GetManyExtendedTranslatedPaged;
-        var criteria = query.Criteria is not null 
-            ? query.Criteria.ToDictionary() 
-            : new Dictionary<string, object?>();
+        var criteria = ResolvePageQueryCriteria(query);
 
         criteria["CultureId"] = cultureId;
-        
-        query.Translate(out var offset, out var limit);
-        criteria["Offset"] = offset;
-        criteria["Limit"] = limit;
         
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
@@ -97,14 +91,14 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
     /// <param name="query">The criteria and paging options to find the entities.</param>
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TCriteria">The type of crieteria for the query.</typeparam>
+    /// <typeparam name="TQuery">The type of the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public Task<EntityPageQueryResult<TCriteria, TEntityTranslated>> GetPageExtendedAsync<TCriteria>(
-        EntityPageQuery<TCriteria> query,
+    public Task<EntityPageQueryResult<TQuery, TEntityTranslated>> GetPageExtendedAsync<TQuery>(
+        TQuery query,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        where TCriteria : class
+        where TQuery : EntityPageQuery
         =>
-            GetPageExtendedAsync<TCriteria, TEntityTranslated>(query, cultureId, cancellationToken);
+            GetPageExtendedAsync<TQuery, TEntityTranslated>(query, cultureId, cancellationToken);
 }
