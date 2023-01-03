@@ -9,96 +9,96 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
     /// <summary>
     /// Gets a page of the translated version of the entities matching the specified criteria.
     /// </summary>
-    /// <param name="query">The criteria and paging options to find the entities.</param>
+    /// <param name="criteria">The criteria and paging options to find the entities.</param>
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
+    /// <typeparam name="TCriteria">The type of the criteria and pagination options.</typeparam>
     /// <typeparam name="TResult">The type of the entities expected as the result of the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public async Task<EntityPageQueryResult<TQuery, TResult>> GetPageAsync<TQuery, TResult>(
-        TQuery query,
+    public virtual async Task<EntityPage<TCriteria, TResult>> GetPageAsync<TCriteria, TResult>(
+        TCriteria criteria,
         string? cultureId,
         CancellationToken cancellationToken
         ) 
-        where TQuery : EntityPageQuery
+        where TCriteria : EntityPageCriteria
         where TResult : class
     {
         var action = Configuration.GetManyExtendedTranslatedPaged;
-        var criteria = ResolvePageQueryCriteria(query);
+        var criteriaDictionary = ToDictionary(criteria);
         
-        criteria["CultureId"] = cultureId;
+        criteriaDictionary["CultureId"] = cultureId;
         
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
-            (IReadOnlyDictionary<string, object?>) criteria,
+            (IReadOnlyDictionary<string, object?>) criteriaDictionary,
             CommandType.StoredProcedure,
             cancellationToken
         );
-        return ResolvePageQueryResult(action, query, results);
+        return ResolveEntityPage(action, criteria, results);
     }
 
     /// <summary>
     /// Gets a page of the translated version of the entities matching the specified criteria.
     /// </summary>
-    /// <param name="query">The criteria and paging options to find the entities.</param>
+    /// <param name="criteria">The criteria and paging options to find the entities.</param>
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
+    /// <typeparam name="TCriteria">The type of the criteria and pagination options.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public Task<EntityPageQueryResult<TQuery, TEntityTranslated>> GetPageAsync<TQuery>(
-        TQuery query,
+    public virtual Task<EntityPage<TCriteria, TEntityTranslated>> GetPageAsync<TCriteria>(
+        TCriteria criteria,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        where TQuery : EntityPageQuery
+        where TCriteria : EntityPageCriteria
         =>
-            GetPageAsync<TQuery, TEntityTranslated>(query, cultureId, cancellationToken);
+            GetPageAsync<TCriteria, TEntityTranslated>(criteria, cultureId, cancellationToken);
 
     /// <summary>
     /// Gets a page of the extended and translated version of one or more entities matching the specified criteria.
     /// </summary>
-    /// <param name="query">The criteria and paging options to find the entities.</param>
+    /// <param name="criteria">The criteria and paging options to find the entities.</param>
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
+    /// <typeparam name="TCriteria">The type of the criteria and pagination options.</typeparam>
     /// <typeparam name="TResult">The type of the entities expected as the result of the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public async Task<EntityPageQueryResult<TQuery, TResult>> GetPageExtendedAsync<TQuery, TResult>(
-        TQuery query,
+    public virtual async Task<EntityPage<TCriteria, TResult>> GetPageExtendedAsync<TCriteria, TResult>(
+        TCriteria criteria,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        where TQuery : EntityPageQuery
+        where TCriteria : EntityPageCriteria
         where TResult : class
     {
         var action = Configuration.GetManyExtendedTranslatedPaged;
-        var criteria = ResolvePageQueryCriteria(query);
+        var criteriaDictionary = ToDictionary(criteria);
 
-        criteria["CultureId"] = cultureId;
+        criteriaDictionary["CultureId"] = cultureId;
         
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
-            (IReadOnlyDictionary<string, object?>) criteria,
+            (IReadOnlyDictionary<string, object?>) criteriaDictionary,
             CommandType.StoredProcedure,
             cancellationToken
         );
-        return ResolvePageQueryResult(action, query, results);
+        return ResolveEntityPage(action, criteria, results);
     }
 
     /// <summary>
     /// Gets a page of the extended and translated version of one or more entities matching the specified criteria.
     /// </summary>
-    /// <param name="query">The criteria and paging options to find the entities.</param>
+    /// <param name="criteria">The criteria and paging options to find the entities.</param>
     /// <param name="cultureId">The culture identifier.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
+    /// <typeparam name="TCriteria">The type of the criteria and pagination options.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public Task<EntityPageQueryResult<TQuery, TEntityTranslated>> GetPageExtendedAsync<TQuery>(
-        TQuery query,
+    public virtual Task<EntityPage<TCriteria, TEntityTranslated>> GetPageExtendedAsync<TCriteria>(
+        TCriteria criteria,
         string? cultureId,
         CancellationToken cancellationToken
         )
-        where TQuery : EntityPageQuery
+        where TCriteria : EntityPageCriteria
         =>
-            GetPageExtendedAsync<TQuery, TEntityTranslated>(query, cultureId, cancellationToken);
+            GetPageExtendedAsync<TCriteria, TEntityTranslated>(criteria, cultureId, cancellationToken);
 }

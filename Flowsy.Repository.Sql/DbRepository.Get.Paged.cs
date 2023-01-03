@@ -6,7 +6,7 @@ namespace Flowsy.Repository.Sql;
 
 public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : class, IEntity
 {
-    protected IDictionary<string, object?> ResolvePageQueryCriteria<TQuery>(TQuery query) where TQuery : EntityPageQuery
+    protected virtual IDictionary<string, object?> ToDictionary(EntityPageCriteria criteria)
     {
         var excludedProperties = new []
         {
@@ -15,33 +15,32 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
             "PageNumber",
             "PageSize"
         };
-        var criteria = query
-            .ToDictionary();
+        var dictionary = criteria.ToDictionary();
         
         foreach (var excluded in excludedProperties)
-            if (criteria.ContainsKey(excluded))
-                criteria.Remove(excluded);
+            if (dictionary.ContainsKey(excluded))
+                dictionary.Remove(excluded);
         
-        query.Translate(out var offset, out var limit);
-        criteria["Offset"] = offset;
-        criteria["Limit"] = limit;
+        criteria.Translate(out var offset, out var limit);
+        dictionary["Offset"] = offset;
+        dictionary["Limit"] = limit;
 
-        return criteria;
+        return dictionary;
     }
 
-    protected EntityPageQueryResult<TQuery, TResult> ResolvePageQueryResult<TQuery, TResult>(
+    protected virtual EntityPage<TCriteria, TPageEntity> ResolveEntityPage<TCriteria, TPageEntity>(
         DbRepositoryAction action,
-        TQuery query,
-        IEnumerable<TResult> results
-        ) 
-        where TQuery : EntityPageQuery
-        where TResult : class
+        TCriteria criteria,
+        IEnumerable<TPageEntity> entities
+        )
+        where TCriteria : EntityPageCriteria
+        where TPageEntity : class
     {
-        var list = results.ToList();
+        var list = entities.ToList();
         
         long? totalItemCount = null;
-        var totalCountProperty = query.TotalCountProperty ?? action.TotalCountProperty;
-        if (query.CountTotal && !string.IsNullOrEmpty(totalCountProperty) && list.Any())
+        var totalCountProperty = criteria.TotalCountProperty ?? action.TotalCountProperty;
+        if (criteria.CountTotal && !string.IsNullOrEmpty(totalCountProperty) && list.Any())
         {
             var firstResult = list.First();
             var property = firstResult.GetType().GetProperty(totalCountProperty);
@@ -50,78 +49,78 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
                 totalItemCount = Convert.ToInt64(value);
         }
         
-        return new EntityPageQueryResult<TQuery, TResult>(query, list, totalItemCount);
+        return new EntityPage<TCriteria, TPageEntity>(criteria, list, totalItemCount);
     }
 
     /// <summary>
     /// Gets a page of one or more entities matching the specified criteria.
     /// </summary>
-    /// <param name="query">The criteria and paging options to find the entities.</param>
+    /// <param name="criteria">The criteria and paging options to find the entities.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
+    /// <typeparam name="TCriteria">The type of the criteria and pagination options.</typeparam>
     /// <typeparam name="TResult">The type of the entities expected as the result of the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public override async Task<EntityPageQueryResult<TQuery, TResult>> GetPageAsync<TQuery, TResult>(
-        TQuery query,
+    public override async Task<EntityPage<TCriteria, TResult>> GetPageAsync<TCriteria, TResult>(
+        TCriteria criteria,
         CancellationToken cancellationToken
         )
     {
         var action = Configuration.GetManyPaged;
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
-            (IReadOnlyDictionary<string, object?>) ResolvePageQueryCriteria(query),
+            (IReadOnlyDictionary<string, object?>) ToDictionary(criteria),
             CommandType.StoredProcedure,
             cancellationToken
             );
-        return ResolvePageQueryResult(action, query, results);
+        return ResolveEntityPage(action, criteria, results);
     }
 
     /// <summary>
     /// Gets a page of one or more entities matching the specified criteria.
     /// </summary>
-    /// <param name="query">The criteria and paging options to find the entities.</param>
+    /// <param name="criteria">The criteria and paging options to find the entities.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
+    /// <typeparam name="TCriteria">The type of the criteria and pagination options.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public override Task<EntityPageQueryResult<TQuery, TEntity>> GetPageAsync<TQuery>(
-        TQuery query,
+    public override Task<EntityPage<TCriteria, TEntity>> GetPageAsync<TCriteria>(
+        TCriteria criteria,
         CancellationToken cancellationToken
         )
-        => GetPageAsync<TQuery, TEntity>(query, cancellationToken);
+        => GetPageAsync<TCriteria, TEntity>(criteria, cancellationToken);
 
     /// <summary>
     /// Gets a page of the extended version of one or more entities matching the specified criteria.
     /// </summary>
-    /// <param name="query">The criteria and paging options to find the entities.</param>
+    /// <param name="criteria">The criteria and paging options to find the entities.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
+    /// <typeparam name="TCriteria">The type of the criteria and pagination options.</typeparam>
     /// <typeparam name="TResult">The type of the entities expected as the result of the query.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public override async Task<EntityPageQueryResult<TQuery, TResult>> GetPageExtendedAsync<TQuery, TResult>(
-        TQuery query,
+    public override async Task<EntityPage<TCriteria, TResult>> GetPageExtendedAsync<TCriteria, TResult>(
+        TCriteria criteria,
         CancellationToken cancellationToken
         )
     {
         var action = Configuration.GetManyExtendedPaged;
         var results = await QueryAsync<TResult>(
             ResolveRoutineName($"{EntityName}{action.Name}"),
-            (IReadOnlyDictionary<string, object?>) ResolvePageQueryCriteria(query),
+            (IReadOnlyDictionary<string, object?>) ToDictionary(criteria),
             CommandType.StoredProcedure,
             cancellationToken
             );
-        return ResolvePageQueryResult(action, query, results);
+        return ResolveEntityPage(action, criteria, results);
     }
 
     /// <summary>
     /// Gets a page of the extended version of one or more entities matching the specified criteria.
     /// </summary>
-    /// <param name="query">The criteria and paging options to find the entities.</param>
+    /// <param name="criteria">The criteria and paging options to find the entities.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    /// <typeparam name="TCriteria">The type of the query.</typeparam>
+    /// <typeparam name="TCriteria">The type of the criteria and pagination options.</typeparam>
     /// <returns>The page of entities matching the provided criteria.</returns>
-    public override Task<EntityPageQueryResult<TCriteria, TEntity>> GetPageExtendedAsync<TCriteria>(
-        TCriteria query,
+    public override Task<EntityPage<TCriteria, TEntity>> GetPageExtendedAsync<TCriteria>(
+        TCriteria criteria,
         CancellationToken cancellationToken
         )
-        => GetPageExtendedAsync<TCriteria, TEntity>(query, cancellationToken);
+        => GetPageExtendedAsync<TCriteria, TEntity>(criteria, cancellationToken);
 }
