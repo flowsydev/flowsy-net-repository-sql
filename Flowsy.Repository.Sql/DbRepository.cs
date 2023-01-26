@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Data;
 using Dapper;
 using Flowsy.Core;
@@ -113,6 +114,16 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             DateTimeOffset dateTimeOffset => new DbParameterInfo(parameterName, DbType.DateTimeOffset, null, null, Configuration.DateTimeOffsetFormat == DbDateTimeOffsetFormat.Utc ? dateTimeOffset.UtcDateTime : dateTimeOffset.LocalDateTime),
             DateOnly => new DbParameterInfo(parameterName, DbType.Date, null, null, value),
             Enum e => new DbParameterInfo(parameterName, Configuration.EnumConvention.Format == DbEnumFormat.Ordinal ? ResolveEnumOrdinalType(e) : DbType.String, null, null, ResolveEnumValue(e)),
+            IEnumerable<sbyte> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
+            IEnumerable<byte> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
+            IEnumerable<short> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
+            IEnumerable<int> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
+            IEnumerable<long> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
+            IEnumerable<float> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
+            IEnumerable<double> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
+            IEnumerable<decimal> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
+            IEnumerable<bool> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
+            IEnumerable enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.Cast<object?>().ToArray()),
             _ => new DbParameterInfo(parameterName, null, null, null, value)
         };
     }
