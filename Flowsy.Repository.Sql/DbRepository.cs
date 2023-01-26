@@ -123,7 +123,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             IEnumerable<double> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
             IEnumerable<decimal> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
             IEnumerable<bool> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
-            IEnumerable enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.Cast<object?>().ToArray()),
+            IEnumerable<string> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
             _ => new DbParameterInfo(parameterName, null, null, null, value)
         };
     }
