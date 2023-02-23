@@ -44,12 +44,12 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         CancellationToken cancellationToken
         )
     {
-        var action = Configuration.Update;
-        
+        var action = Configuration.Actions.Update;
+        var param = ToDynamicParameters(properties.ExceptBy(action.ExcludedProperties));
         return ExecuteAsync(
-            ResolveRoutineName($"{EntityName}{action.Name}"),
-            ToDynamicParameters(properties.ExceptBy(action.ExcludedProperties)),
-            CommandType.StoredProcedure,
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
         );
     }

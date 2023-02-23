@@ -5,7 +5,7 @@ namespace Flowsy.Repository.Sql;
 
 public class DbExecutionContext : IExecutionContext
 {
-    public DbExecutionContext(IRepository repository, string action, object? parameters, CommandType commandType, IDbTransaction? transaction)
+    public DbExecutionContext(IRepository repository, string action, object? parameters, CommandType? commandType, IDbTransaction? transaction)
     {
         Repository = repository;
         Action = action;
@@ -17,6 +17,6 @@ public class DbExecutionContext : IExecutionContext
     public IRepository Repository { get; }
     public string Action { get; }
     public object? Parameters { get; }
-    public CommandType CommandType { get; }
+    public CommandType? CommandType { get; }
     public IDbTransaction? Transaction { get; }
 }

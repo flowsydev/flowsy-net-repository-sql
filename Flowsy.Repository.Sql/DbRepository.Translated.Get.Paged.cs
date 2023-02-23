@@ -23,15 +23,15 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         where TCriteria : EntityPageCriteria
         where TResult : class
     {
-        var action = Configuration.GetManyExtendedTranslatedPaged;
         var criteriaDictionary = ToDictionary(criteria);
-        
         criteriaDictionary["CultureId"] = cultureId;
-        
+
+        var action = Configuration.Actions.GetManyExtendedTranslatedPaged;
+        var param = ToDynamicParameters(criteriaDictionary);
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{action.Name}"),
-            (IReadOnlyDictionary<string, object?>) criteriaDictionary,
-            CommandType.StoredProcedure,
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
         );
         return ResolveEntityPage(action, criteria, results);
@@ -71,15 +71,15 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         where TCriteria : EntityPageCriteria
         where TResult : class
     {
-        var action = Configuration.GetManyExtendedTranslatedPaged;
         var criteriaDictionary = ToDictionary(criteria);
-
         criteriaDictionary["CultureId"] = cultureId;
         
+        var action = Configuration.Actions.GetManyExtendedTranslatedPaged;
+        var param = ToDynamicParameters(criteriaDictionary);
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{action.Name}"),
-            (IReadOnlyDictionary<string, object?>) criteriaDictionary,
-            CommandType.StoredProcedure,
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
         );
         return ResolveEntityPage(action, criteria, results);

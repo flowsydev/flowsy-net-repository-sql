@@ -14,17 +14,26 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     /// <param name="value">The new value for the property to be updated.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The number of affected entities.</returns>
-    public override Task<int> PatchAsync(TIdentity id, string propertyName, object value, CancellationToken cancellationToken)
-        => ExecuteAsync(
-            ResolveRoutineName($"{EntityName}{Configuration.Patch.Name}{propertyName}"),
-            new Dictionary<string, object?>
-            {
-                [IdentityPropertyName] = id,
-                [propertyName] = value
-            },
-            CommandType.StoredProcedure,
+    public override Task<int> PatchAsync(
+        TIdentity id,
+        string propertyName,
+        object value,
+        CancellationToken cancellationToken
+        )
+    {
+        var action = Configuration.Actions.Patch;
+        var param = ToDynamicParameters(new Dictionary<string, object?>
+        {
+            [IdentityPropertyName] = id,
+            [propertyName] = value
+        });
+        return ExecuteAsync(
+            ResolveRoutineStatement($"{EntityName}{action.Name}{propertyName}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
-        );
+            );
+    }
 
     /// <summary>
     /// Updates only certain properties of an entity.
@@ -46,12 +55,12 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         CancellationToken cancellationToken
         )
     {
-        var action = Configuration.Patch;
-        
+        var action = Configuration.Actions.Patch;
+        var param = ToDynamicParameters(properties.ExceptBy(action.ExcludedProperties));
         return ExecuteAsync(
-            ResolveRoutineName($"{EntityName}{Configuration.Patch.Name}"),
-            ToDynamicParameters(properties.ExceptBy(action.ExcludedProperties)),
-            CommandType.StoredProcedure,
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
         );
     }

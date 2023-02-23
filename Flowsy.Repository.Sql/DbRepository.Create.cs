@@ -59,10 +59,9 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     public override async Task<TIdentity> CreateAsync(IReadOnlyDictionary<string, object?> properties, CancellationToken cancellationToken)
     {
         IDbConnection? connection = null;
-        var action = Configuration.Create;
-        var sql = ResolveRoutineName($"{EntityName}{action.Name}");
-        DynamicParameters? parameters = null;
-        const CommandType commandType = CommandType.StoredProcedure;
+        var action = Configuration.Actions.Create;
+        CommandDefinition? commandDefinition = null;
+        DynamicParameters? param = null;
         
         try
         {
@@ -70,16 +69,16 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
             if (Configuration.AutoIdentity)
                 excludedProperties.Add(IdentityPropertyName);
 
-            parameters = ToDynamicParameters(properties.ExceptBy(excludedProperties));
+            param = ToDynamicParameters(properties.ExceptBy(excludedProperties));
+            commandDefinition = ResolveRoutineCommandDefinition(
+                $"{EntityName}{action.Name}",
+                param,
+                Configuration.RoutineConvention.RoutineType,
+                cancellationToken
+                );
             
             connection = GetConnection();
-            return await connection.QueryFirstOrDefaultAsync<TIdentity>(new CommandDefinition(
-                sql, 
-                parameters: parameters,
-                commandType: commandType,
-                transaction: Transaction,
-                cancellationToken: cancellationToken
-            ));
+            return await connection.QueryFirstOrDefaultAsync<TIdentity>((CommandDefinition) commandDefinition);
         }
         catch (Exception exception)
         {
@@ -89,7 +88,16 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
             if (ExceptionHandler is null)
                 throw;
             
-            throw ExceptionHandler.Translate(exception, new DbExecutionContext(this, sql, parameters, commandType, Transaction));
+            throw ExceptionHandler.Translate(
+                exception,
+                new DbExecutionContext(
+                    this,
+                    ResolveRoutineName($"{EntityName}{action.Name}"),
+                    param,
+                    commandDefinition?.CommandType,
+                    Transaction
+                    )
+                );
         }
     }
 }

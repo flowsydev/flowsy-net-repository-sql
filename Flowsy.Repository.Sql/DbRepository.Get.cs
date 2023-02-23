@@ -13,16 +13,20 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <typeparam name="T">Tye type of entity to return.</typeparam>
     /// <returns>The entity identified by the provided value or a null value if not found.</returns>
-    public override Task<T?> GetByIdAsync<T>(TIdentity id, CancellationToken cancellationToken) where T : class 
-        => QueryFirstOrDefaultAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetById.Name}"),
-            new Dictionary<string, object?>
-            {
-                [IdentityPropertyName] = id ?? throw new ArgumentNullException(nameof(id))
-            },
-            CommandType.StoredProcedure,
+    public override Task<T?> GetByIdAsync<T>(TIdentity id, CancellationToken cancellationToken) where T : class
+    {
+        var action = Configuration.Actions.GetById;
+        var param = ToDynamicParameters(new Dictionary<string, object?>
+        {
+            [IdentityPropertyName] = id ?? throw new ArgumentNullException(nameof(id))
+        });
+        return QueryFirstOrDefaultAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
+    }
     
     /// <summary>
     /// Gets the entity identified by the provided value.
@@ -32,7 +36,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     /// <returns>The entity identified by the provided value or a null value if not found.</returns>
     public override Task<TEntity?> GetByIdAsync(TIdentity id, CancellationToken cancellationToken)
         => GetByIdAsync<TEntity>(id, cancellationToken);
-    
+
     /// <summary>
     /// Gets an extended version of the entity identified by the provided value.
     /// </summary>
@@ -40,16 +44,20 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <typeparam name="T">Tye type of entity to return.</typeparam>
     /// <returns>The entity identified by the provided value or a null value if not found.</returns>
-    public override Task<T?> GetByIdExtendedAsync<T>(TIdentity id, CancellationToken cancellationToken) where T : class 
-        => QueryFirstOrDefaultAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetByIdExtended.Name}"),
-            new Dictionary<string, object?>
-            {
-                [IdentityPropertyName] = id ?? throw new ArgumentNullException(nameof(id))
-            },
-            CommandType.StoredProcedure,
+    public override Task<T?> GetByIdExtendedAsync<T>(TIdentity id, CancellationToken cancellationToken) where T : class
+    {
+        var action = Configuration.Actions.GetByIdExtended;
+        var param = ToDynamicParameters(new Dictionary<string, object?>
+        {
+            [IdentityPropertyName] = id ?? throw new ArgumentNullException(nameof(id))
+        });
+        return QueryFirstOrDefaultAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
+    }
 
     /// <summary>
     /// Gets an extended version of the entity identified by the provided value.
@@ -84,12 +92,16 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         IReadOnlyDictionary<string, object?> criteria,
         CancellationToken cancellationToken
         ) where T : class
-        => QueryFirstOrDefaultAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetOne.Name}"),
-            ToDynamicParameters(criteria),
-            CommandType.StoredProcedure,
+    {
+        var action = Configuration.Actions.GetOne;
+        var param = ToDynamicParameters(criteria);
+        return QueryFirstOrDefaultAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
-        );
+            );
+    }
 
     /// <summary>
     /// Gets an entity matching the specified criteria.
@@ -136,12 +148,16 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         IReadOnlyDictionary<string, object?> criteria,
         CancellationToken cancellationToken
         ) where T : class
-        => QueryFirstOrDefaultAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetOneExtended.Name}"),
-            ToDynamicParameters(criteria),
-            CommandType.StoredProcedure,
+    {
+        var action = Configuration.Actions.GetOneExtended;
+        var param = ToDynamicParameters(criteria);
+        return QueryFirstOrDefaultAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
+    }
 
     /// <summary>
     /// Gets the extended version of an entity matching the specified criteria.
@@ -173,7 +189,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     /// <returns>The entities matching the provided criteria.</returns>
     public override Task<IEnumerable<T>> GetManyAsync<T>(dynamic criteria, CancellationToken cancellationToken) where T : class 
         => GetManyAsync<T>(((object) criteria).ToReadonlyDictionary(), cancellationToken);
-    
+
     /// <summary>
     /// Gets one or more entities matching the specified criteria.
     /// </summary>
@@ -181,13 +197,20 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <typeparam name="T">Tye type of entity to return.</typeparam>
     /// <returns>The entities matching the provided criteria.</returns>
-    public override Task<IEnumerable<T>> GetManyAsync<T>(IReadOnlyDictionary<string, object?> criteria, CancellationToken cancellationToken) where T : class
-        => QueryAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetMany.Name}"),
-            criteria,
-            CommandType.StoredProcedure,
+    public override Task<IEnumerable<T>> GetManyAsync<T>(
+        IReadOnlyDictionary<string, object?> criteria,
+        CancellationToken cancellationToken
+        ) where T : class
+    {
+        var action = Configuration.Actions.GetMany;
+        var param = ToDynamicParameters(criteria);
+        return QueryAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
+    }
 
     /// <summary>
     /// Gets one or more entities matching the specified criteria.
@@ -224,13 +247,20 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <typeparam name="T">Tye type of entity to return.</typeparam>
     /// <returns>The entities matching the provided criteria.</returns>
-    public override Task<IEnumerable<T>> GetManyExtendedAsync<T>(IReadOnlyDictionary<string, object?> criteria, CancellationToken cancellationToken) where T : class
-        => QueryAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetManyExtended.Name}"),
-            criteria,
-            CommandType.StoredProcedure,
+    public override Task<IEnumerable<T>> GetManyExtendedAsync<T>(
+        IReadOnlyDictionary<string, object?> criteria,
+        CancellationToken cancellationToken
+        ) where T : class
+    {
+        var action = Configuration.Actions.GetManyExtended;
+        var param = ToDynamicParameters(criteria);
+        return QueryAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
+    }
 
     /// <summary>
     /// Gets the extended version of one or more entities matching the specified criteria.

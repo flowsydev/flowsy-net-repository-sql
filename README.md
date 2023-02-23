@@ -31,7 +31,7 @@ DbRepositoryConfiguration.Default = new DbRepositoryConfiguration(
     schemaName: "public", // The stored routines are in the 'public' schema
     resolveIdentityPropertyName: entityType => $"{entityType.Name}Id", // Customer -> CustomerId
     autoIdentity: true, // Auto increment primary keys
-    routineConvention: new DbConvention(NamingConvention.LowerSnakeCase, "fn_", string.Empty), // fn_ prefix for stored routines
+    routineConvention: new DbRoutineConvention(DbRoutineType.StoredFunction, NamingConvention.LowerSnakeCase, "fn_", string.Empty), // fn_ prefix for stored routines
     parameterConvention: new DbConvention(NamingConvention.LowerSnakeCase, "p_", string.Empty), // p_ prefix for stored routine parameters
     enumConvention: new DbEnumConvention(DbEnumFormat.Name, NamingConvention.PascalCase) // Use the string representation instead of the ordinal value for enums when executing queries
     );

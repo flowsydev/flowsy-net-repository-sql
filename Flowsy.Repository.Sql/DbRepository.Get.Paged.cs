@@ -65,11 +65,12 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         CancellationToken cancellationToken
         )
     {
-        var action = Configuration.GetManyPaged;
+        var action = Configuration.Actions.GetManyPaged;
+        var param = ToDynamicParameters((IReadOnlyDictionary<string, object?>) ToDictionary(criteria)); 
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{action.Name}"),
-            (IReadOnlyDictionary<string, object?>) ToDictionary(criteria),
-            CommandType.StoredProcedure,
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
         return ResolveEntityPage(action, criteria, results);
@@ -101,11 +102,12 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         CancellationToken cancellationToken
         )
     {
-        var action = Configuration.GetManyExtendedPaged;
+        var action = Configuration.Actions.GetManyExtendedPaged;
+        var param = ToDynamicParameters((IReadOnlyDictionary<string, object?>) ToDictionary(criteria));
         var results = await QueryAsync<TResult>(
-            ResolveRoutineName($"{EntityName}{action.Name}"),
-            (IReadOnlyDictionary<string, object?>) ToDictionary(criteria),
-            CommandType.StoredProcedure,
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
         return ResolveEntityPage(action, criteria, results);

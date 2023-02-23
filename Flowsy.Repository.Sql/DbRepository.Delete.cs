@@ -1,4 +1,3 @@
-using System.Data;
 using Flowsy.Core;
 using Flowsy.Repository.Core;
 
@@ -13,15 +12,19 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     /// <param name="cancellationToken"></param>
     /// <returns>The number of affected entities.</returns>
     public override Task<int> DeleteByIdAsync(TIdentity id, CancellationToken cancellationToken)
-        => ExecuteAsync(
-            ResolveRoutineName($"{EntityName}{Configuration.DeleteById.Name}"),
-            new Dictionary<string, object?>
-            {
-                [IdentityPropertyName] = id ?? throw new ArgumentNullException(nameof(id))
-            },
-            CommandType.StoredProcedure,
+    {
+        var action = Configuration.Actions.DeleteById;
+        var param = ToDynamicParameters(new Dictionary<string, object?>
+        {
+            [IdentityPropertyName] = id
+        });
+        return ExecuteAsync(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(), 
             cancellationToken
-        );
+            );
+    }
 
     /// <summary>
     /// Deletes one or more entities matching the specified filter.
@@ -43,12 +46,13 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         CancellationToken cancellationToken
     )
     {
-        var action = Configuration.DeleteMany;
+        var action = Configuration.Actions.DeleteMany;
+        var param = ToDynamicParameters(criteria.ExceptBy(action.ExcludedProperties));
         return ExecuteAsync(
-            ResolveRoutineName($"{EntityName}{action.Name}"),
-            ToDynamicParameters(criteria.ExceptBy(action.ExcludedProperties)),
-            CommandType.StoredProcedure, 
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(), 
             cancellationToken
-        );
+            );
     }
 }

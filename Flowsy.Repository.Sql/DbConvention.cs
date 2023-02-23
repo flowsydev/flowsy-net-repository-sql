@@ -15,7 +15,7 @@ public class DbConvention
     public static DbConvention Default
         => _default ??= new DbConvention(NamingConvention.LowerSnakeCase, string.Empty, string.Empty);
     
-    public DbConvention(NamingConvention? naming, string prefix, string suffix)
+    public DbConvention(NamingConvention? naming, string prefix = "", string suffix = "")
     {
         Naming = naming;
         Prefix = prefix;

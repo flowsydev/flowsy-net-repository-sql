@@ -70,6 +70,86 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
            ?? throw new InvalidOperationException("CouldNotGetValidConnection".Localize());
     
     /// <summary>
+    /// The name of the property that uniquely identifies an entity of the repository. 
+    /// </summary>
+    public override string IdentityPropertyName => Configuration.ResolveIdentityPropertyName(typeof(TEntity));
+    
+    /// <summary>
+    /// Resolves a stored routine name by applying the schema name, prefix, naming convention and suffix configured for the repository.  
+    /// </summary>
+    /// <param name="simpleName">A simple name like UserCreate or CustomerGetMany.</param>
+    /// <returns>A full routine name like public.fn_user_create or public.fn_customer_get_many.</returns>
+    protected virtual string ResolveRoutineName(string simpleName)
+    {
+        var schemaPrefix = string.IsNullOrEmpty(Configuration.SchemaName) ? string.Empty : $"{Configuration.SchemaName}.";
+        var routineName = $"{Configuration.RoutineConvention.Prefix}{simpleName.ApplyNamingConvention(Configuration.RoutineConvention.Naming)}{Configuration.RoutineConvention.Suffix}";
+
+        return $"{schemaPrefix}{routineName}";
+    }
+
+    /// <summary>
+    /// Resolves the statement required to call a stored procedure or stored function based on the given routine type or the routine type configured for the repository.
+    /// </summary>
+    /// <param name="routineSimpleName">A simple name like UserCreate or CustomerGetMany.</param>
+    /// <param name="param">The routine parameters.</param>
+    /// <param name="routineType">The routine type (stored procedure/stored function)</param>
+    /// <returns>A value like public.sp_user_create for stored procedures or select * from public.fn_customer_get_many(@p_city_name) for stored functions.</returns>
+    protected virtual string ResolveRoutineStatement(string routineSimpleName, DynamicParameters param, DbRoutineType? routineType = null)
+    {
+        var routineName = ResolveRoutineName(routineSimpleName);
+        if ((routineType ?? Configuration.RoutineConvention.RoutineType) != DbRoutineType.StoredFunction)
+            return routineName;
+        
+        var parameterNames = string.Join(
+            ", ",
+            param.ParameterNames.Select(p => $"@{p}")
+            );
+        return $"select * from {routineName}({parameterNames})";
+    }
+
+    /// <summary>
+    /// Resolves the proper command type for the given routine type or the routine type configured for the repository.
+    /// </summary>
+    /// <param name="routineType">The routine type (stored procedure/stored function)</param>
+    /// <returns>CommandType.StoredProcedure/CommandType.Text</returns>
+    protected virtual CommandType ResolveRoutineCommandType(DbRoutineType? routineType = null)
+        => (routineType ?? Configuration.RoutineConvention.RoutineType) switch
+        {
+            DbRoutineType.StoredFunction => CommandType.Text,
+            _ => CommandType.StoredProcedure
+        };
+
+    /// <summary>
+    /// Resolves the CommandDefinition for the routine
+    /// </summary>
+    /// <param name="routineSimpleName">A simple name like UserCreate or CustomerGetMany.</param>
+    /// <param name="param">The parameters for the routine.</param>
+    /// <param name="routineType">The routine type (stored procedure/stored function)</param>
+    /// <param name="cancellationToken">The cancellation token for the operation.</param>
+    /// <returns></returns>
+    protected virtual CommandDefinition ResolveRoutineCommandDefinition(
+        string routineSimpleName,
+        DynamicParameters param,
+        DbRoutineType? routineType = null,
+        CancellationToken? cancellationToken = null
+        )
+        => new (
+            ResolveRoutineStatement(routineSimpleName, param, routineType),
+            param,
+            commandType: ResolveRoutineCommandType(routineType),
+            transaction: Transaction,
+            cancellationToken: cancellationToken ?? CancellationToken.None
+            );
+
+    /// <summary>
+    /// Resolves a parameter name by applying the prefix, naming convention and suffix configured for the repository.
+    /// </summary>
+    /// <param name="simpleName">A simple name like UserId or EmailAddress.</param>
+    /// <returns>A full parameter name like p_user_id or p_email_address.</returns>
+    protected virtual string ResolveRoutineParameterName(string simpleName) =>
+        $"{Configuration.ParameterConvention.Prefix}{simpleName.ApplyNamingConvention(Configuration.ParameterConvention.Naming)}{Configuration.ParameterConvention.Suffix}";
+    
+    /// <summary>
     /// Creates a DynamicParameters instance from the properties of the given object.
     /// </summary>
     /// <param name="obj">The object to read the properties from.</param>
@@ -177,7 +257,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <typeparam name="T">The type of entity to return.</typeparam>
     /// <returns>A list of entities.</returns>
-    protected Task<IEnumerable<T>> QueryAsync<T>(
+    protected virtual Task<IEnumerable<T>> QueryAsync<T>(
         string sql,
         CommandType commandType,
         CancellationToken cancellationToken
@@ -193,7 +273,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <typeparam name="T">The type of entity to return.</typeparam>
     /// <returns>A list of entities.</returns>
-    protected Task<IEnumerable<T>> QueryAsync<T>(
+    protected virtual Task<IEnumerable<T>> QueryAsync<T>(
         string sql,
         dynamic param,
         CommandType commandType,
@@ -215,7 +295,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <typeparam name="T">The type of entity to return.</typeparam>
     /// <returns>A list of entities.</returns>
-    protected Task<IEnumerable<T>> QueryAsync<T>(
+    protected virtual Task<IEnumerable<T>> QueryAsync<T>(
         string sql,
         IReadOnlyDictionary<string, object?> properties,
         CommandType commandType,
@@ -237,7 +317,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <typeparam name="T">The type of entity to return.</typeparam>
     /// <returns>A list of entities.</returns>
-    protected async Task<IEnumerable<T>> QueryAsync<T>(
+    protected virtual async Task<IEnumerable<T>> QueryAsync<T>(
         string sql,
         DynamicParameters? param,
         CommandType commandType,
@@ -276,7 +356,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <typeparam name="T">The type of entity to return.</typeparam>
     /// <returns>A single entity or a null value if not found.</returns>
-    protected Task<T?> QueryFirstOrDefaultAsync<T>(
+    protected virtual Task<T?> QueryFirstOrDefaultAsync<T>(
         string sql,
         CommandType commandType,
         CancellationToken cancellationToken
@@ -292,7 +372,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <typeparam name="T">The type of entity to return.</typeparam>
     /// <returns>A single entity or a null value if not found.</returns>
-    protected Task<T?> QueryFirstOrDefaultAsync<T>(
+    protected virtual Task<T?> QueryFirstOrDefaultAsync<T>(
         string sql,
         dynamic param,
         CommandType commandType,
@@ -314,7 +394,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <typeparam name="T">The type of entity to return.</typeparam>
     /// <returns>A single entity or a null value if not found.</returns>
-    protected Task<T?> QueryFirstOrDefaultAsync<T>(
+    protected virtual Task<T?> QueryFirstOrDefaultAsync<T>(
         string sql,
         IReadOnlyDictionary<string, object?> properties,
         CommandType commandType,
@@ -337,7 +417,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <typeparam name="T">The type of entity to return.</typeparam>
     /// <returns>A single entity or a null value if not found.</returns>
-    protected async Task<T?> QueryFirstOrDefaultAsync<T>(
+    protected virtual async Task<T?> QueryFirstOrDefaultAsync<T>(
         string sql,
         DynamicParameters? param,
         CommandType commandType,
@@ -376,7 +456,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="commandType">The command type.</param>
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <returns>The number of affected entities.</returns>
-    protected Task<int> ExecuteAsync(
+    protected virtual Task<int> ExecuteAsync(
         string sql,
         CommandType commandType,
         CancellationToken cancellationToken
@@ -391,7 +471,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="commandType">The command type.</param>
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <returns>The number of affected entities.</returns>
-    protected Task<int> ExecuteAsync(
+    protected virtual Task<int> ExecuteAsync(
         string sql,
         dynamic param,
         CommandType commandType,
@@ -412,7 +492,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="commandType">The command type.</param>
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <returns>The number of affected entities.</returns>
-    protected Task<int> ExecuteAsync(
+    protected virtual Task<int> ExecuteAsync(
         string sql,
         IReadOnlyDictionary<string, object?> properties,
         CommandType commandType,
@@ -434,7 +514,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// <param name="commandType">The command type.</param>
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <returns>The number of affected entities.</returns>
-    protected async Task<int> ExecuteAsync(
+    protected virtual async Task<int> ExecuteAsync(
         string sql,
         DynamicParameters? param,
         CommandType commandType,

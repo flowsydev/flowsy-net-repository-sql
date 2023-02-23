@@ -18,16 +18,20 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         string? cultureId,
         CancellationToken cancellationToken
         ) where T : class
-        => QueryFirstOrDefaultAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetByIdTranslated.Name}"),
-            new Dictionary<string, object?>
-            {
-                [IdentityPropertyName] = id ?? throw new ArgumentNullException(nameof(id)),
-                ["CultureId"] = cultureId
-            },
-            CommandType.StoredProcedure,
+    {
+        var action = Configuration.Actions.GetByIdTranslated;
+        var param = ToDynamicParameters(new Dictionary<string, object?>
+        {
+            [IdentityPropertyName] = id ?? throw new ArgumentNullException(nameof(id)),
+            ["CultureId"] = cultureId
+        }); 
+        return QueryFirstOrDefaultAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
-        );
+            );
+    }
     
     /// <summary>
     /// Gets the translated version of the entity identified by the provided value.
@@ -42,7 +46,7 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         CancellationToken cancellationToken
         )
         => GetByIdAsync<TEntityTranslated>(id, cultureId, cancellationToken);
-    
+
     /// <summary>
     /// Gets the extended and translated version of the entity identified by the provided value.
     /// </summary>
@@ -56,16 +60,20 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         string? cultureId,
         CancellationToken cancellationToken
         ) where T : class
-        => QueryFirstOrDefaultAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetByIdExtendedTranslated.Name}"),
-            new Dictionary<string, object?>
-            {
-                [IdentityPropertyName] = id ?? throw new ArgumentNullException(nameof(id)),
-                ["CultureId"] = cultureId
-            },
-            CommandType.StoredProcedure,
+    {
+        var action = Configuration.Actions.GetByIdExtendedTranslated;
+        var param = ToDynamicParameters(new Dictionary<string, object?>
+        {
+            [IdentityPropertyName] = id ?? throw new ArgumentNullException(nameof(id)),
+            ["CultureId"] = cultureId
+        }); 
+        return QueryFirstOrDefaultAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
+    }
 
     /// <summary>
     /// Gets the extended and translated version of the entity identified by the provided value.
@@ -95,7 +103,7 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         CancellationToken cancellationToken
         ) where T : class
         => GetOneAsync<T>(((object) criteria).ToReadonlyDictionary(), cultureId, cancellationToken);
-    
+
     /// <summary>
     /// Gets the translated version of an entity matching the specified criteria.
     /// </summary>
@@ -109,15 +117,19 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         string? cultureId,
         CancellationToken cancellationToken
         ) where T : class
-        => QueryFirstOrDefaultAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetOneTranslated.Name}"),
-            new Dictionary<string, object?>(criteria)
-            {
-                ["CultureId"] = cultureId
-            },
-            CommandType.StoredProcedure,
+    {
+        var action = Configuration.Actions.GetOneTranslated;
+        var param = ToDynamicParameters(new Dictionary<string, object?>(criteria)
+        {
+            ["CultureId"] = cultureId
+        });
+        return QueryFirstOrDefaultAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
+    }
 
     /// <summary>
     /// Gets the translated version of an entity matching the specified criteria.
@@ -175,15 +187,19 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         string? cultureId,
         CancellationToken cancellationToken
         ) where T : class
-        => QueryFirstOrDefaultAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetOneExtendedTranslated.Name}"),
-            new Dictionary<string, object?>(criteria)
-            {
-                ["CultureId"] = cultureId
-            },
-            CommandType.StoredProcedure,
+    {
+        var action = Configuration.Actions.GetOneExtendedTranslated;
+        var param = ToDynamicParameters(new Dictionary<string, object?>(criteria)
+        {
+            ["CultureId"] = cultureId
+        }); 
+        return QueryFirstOrDefaultAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
+    }
 
     /// <summary>
     /// Gets the extended and translated version of an entity matching the specified criteria.
@@ -245,15 +261,19 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         string? cultureId,
         CancellationToken cancellationToken
         ) where T : class
-        => QueryAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetManyTranslated.Name}"),
-            new Dictionary<string, object?>(criteria)
-            {
-                ["CultureId"] = cultureId
-            },
-            CommandType.StoredProcedure,
+    {
+        var action = Configuration.Actions.GetManyTranslated;
+        var param = ToDynamicParameters(new Dictionary<string, object?>(criteria)
+        {
+            ["CultureId"] = cultureId
+        });
+        return QueryAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
+    }
     
     /// <summary>
     /// Gets the translated version of one or more entities matching the specified criteria.
@@ -304,7 +324,7 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
             cultureId,
             cancellationToken
             );
-    
+
     /// <summary>
     /// Gets the extended and translated version of one or more entities matching the specified criteria.
     /// </summary>
@@ -317,15 +337,19 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         string? cultureId,
         CancellationToken cancellationToken
         ) where T : class
-        => QueryAsync<T>(
-            ResolveRoutineName($"{EntityName}{Configuration.GetManyExtendedTranslated.Name}"),
-            new Dictionary<string, object?>(criteria)
-            {
-                ["CultureId"] = cultureId
-            },
-            CommandType.StoredProcedure,
+    {
+        var action = Configuration.Actions.GetManyExtendedTranslated;
+        var param = ToDynamicParameters(new Dictionary<string, object?>(criteria)
+        {
+            ["CultureId"] = cultureId
+        });
+        return QueryAsync<T>(
+            ResolveRoutineStatement($"{EntityName}{action.Name}", param),
+            param,
+            ResolveRoutineCommandType(),
             cancellationToken
             );
+    }
     
     /// <summary>
     /// Gets the extended and translated version of one or more entities matching the specified criteria.
