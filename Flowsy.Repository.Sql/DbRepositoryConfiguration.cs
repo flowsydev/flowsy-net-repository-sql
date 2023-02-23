@@ -50,7 +50,7 @@ public class DbRepositoryConfiguration
         bool? autoIdentity = default,
         
         DbRoutineConvention? routineConvention = default,
-        DbConvention? parameterConvention = default,
+        DbRoutineParameterConvention? parameterConvention = default,
         DbDateTimeOffsetFormat? dateTimeOffsetFormat = default,
         DbEnumConvention? enumConvention = default,
         DbRepositoryActionSet? actions = default
@@ -76,7 +76,7 @@ public class DbRepositoryConfiguration
     private bool? _autoIdentity;
 
     private DbRoutineConvention? _routineConvention;
-    private DbConvention? _parameterConvention;
+    private DbRoutineParameterConvention? _parameterConvention;
     private DbDateTimeOffsetFormat? _dateTimeOffsetFormat;
     private DbEnumConvention? _enumConvention;
     private DbRepositoryActionSet? _actions;
@@ -129,9 +129,9 @@ public class DbRepositoryConfiguration
     /// <summary>
     /// The conventions used to build names for database parameters.
     /// </summary>
-    public DbConvention ParameterConvention
+    public DbRoutineParameterConvention ParameterConvention
     {
-        get => _parameterConvention ?? (this == Default ? DbConvention.Default : Default.ParameterConvention);
+        get => _parameterConvention ?? (this == Default ? DbRoutineParameterConvention.Default : Default.ParameterConvention);
         set => _parameterConvention = value;
     }
 

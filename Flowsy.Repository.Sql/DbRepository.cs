@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Data;
 using Dapper;
 using Flowsy.Core;
@@ -97,12 +96,21 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     protected virtual string ResolveRoutineStatement(string routineSimpleName, DynamicParameters param, DbRoutineType? routineType = null)
     {
         var routineName = ResolveRoutineName(routineSimpleName);
-        if ((routineType ?? Configuration.RoutineConvention.RoutineType) != DbRoutineType.StoredFunction)
+        var finalRoutineType = routineType ?? Configuration.RoutineConvention.RoutineType;
+        
+        if ((finalRoutineType) != DbRoutineType.StoredFunction)
             return routineName;
         
         var parameterNames = string.Join(
             ", ",
-            param.ParameterNames.Select(p => $"@{p}")
+            param.ParameterNames.Select(
+                parameterName => Configuration.ParameterConvention.ResolvePlaceholder(
+                    routineName,
+                    parameterName,
+                    param.Get<object?>(parameterName),
+                    finalRoutineType
+                    )
+                )
             );
         return $"select * from {routineName}({parameterNames})";
     }
