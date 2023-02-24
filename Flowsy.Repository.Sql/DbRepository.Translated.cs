@@ -15,11 +15,11 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
     where TEntity : class, IEntity
     where TEntityTranslated : class, TEntity, IEntityTranslation
 {
-    protected DbRepository(IDbConnectionFactory connectionFactory, IExceptionHandler? exceptionHandler = null) : base(connectionFactory, exceptionHandler)
+    protected DbRepository(IDbConnectionFactory connectionFactory, IRepositoryExceptionHandler? exceptionHandler = null) : base(connectionFactory, exceptionHandler)
     {
     }
 
-    protected DbRepository(IDbTransaction transaction, IExceptionHandler? exceptionHandler = null) : base(transaction, exceptionHandler)
+    protected DbRepository(IDbTransaction transaction, IRepositoryExceptionHandler? exceptionHandler = null) : base(transaction, exceptionHandler)
     {
     }
 }

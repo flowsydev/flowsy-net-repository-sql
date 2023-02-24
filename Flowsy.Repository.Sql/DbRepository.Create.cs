@@ -90,7 +90,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
             
             throw ExceptionHandler.Translate(
                 exception,
-                new DbExecutionContext(
+                new DbRepositoryActionContext(
                     this,
                     ResolveRoutineName($"{EntityName}{action.Name}"),
                     param,

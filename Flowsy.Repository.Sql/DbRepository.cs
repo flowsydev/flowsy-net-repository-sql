@@ -18,7 +18,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// </summary>
     /// <param name="connectionFactory">The factory to create database connections.</param>
     /// <param name="exceptionHandler">An optional exception handler</param>
-    protected DbRepository(IDbConnectionFactory connectionFactory, IExceptionHandler? exceptionHandler = null) : base(exceptionHandler)
+    protected DbRepository(IDbConnectionFactory connectionFactory, IRepositoryExceptionHandler? exceptionHandler = null) : base(exceptionHandler)
     {
         ConnectionFactory = connectionFactory;
     }
@@ -28,7 +28,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// </summary>
     /// <param name="transaction">The transaction for the repository to participate in.</param>
     /// <param name="exceptionHandler">An optional exception handler</param>
-    protected DbRepository(IDbTransaction transaction, IExceptionHandler? exceptionHandler = null) : base(exceptionHandler)
+    protected DbRepository(IDbTransaction transaction, IRepositoryExceptionHandler? exceptionHandler = null) : base(exceptionHandler)
     {
         Transaction = transaction;
     }
@@ -352,7 +352,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             if (ExceptionHandler is null)
                 throw;
             
-            throw ExceptionHandler.Translate(exception, new DbExecutionContext(this, sql, param, commandType, Transaction));
+            throw ExceptionHandler.Translate(exception, new DbRepositoryActionContext(this, sql, param, commandType, Transaction));
         }
     }
 
@@ -453,7 +453,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             if (ExceptionHandler is null)
                 throw;
             
-            throw ExceptionHandler.Translate(exception, new DbExecutionContext(this, sql, param, commandType, Transaction));
+            throw ExceptionHandler.Translate(exception, new DbRepositoryActionContext(this, sql, param, commandType, Transaction));
         }
     }
 
@@ -549,7 +549,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             if (ExceptionHandler is null)
                 throw;
             
-            throw ExceptionHandler.Translate(exception, new DbExecutionContext(this, sql, param, commandType, Transaction));
+            throw ExceptionHandler.Translate(exception, new DbRepositoryActionContext(this, sql, param, commandType, Transaction));
         }
     }
 }
