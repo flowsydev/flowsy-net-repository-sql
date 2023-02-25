@@ -5,12 +5,12 @@ using Flowsy.Localization;
 
 namespace Flowsy.Repository.Sql;
 
-public class DbTemporalTypeConverter<T> : SqlMapper.TypeHandler<T>
+public class DbTemporalTypeHandler<T> : SqlMapper.TypeHandler<T>
 {
     private readonly IEnumerable<string> _parameterFormats;
     private readonly IEnumerable<string> _parsingFormats;
 
-    public DbTemporalTypeConverter(IEnumerable<string>? parameterFormats = null, IEnumerable<string>? parsingFormats = null)
+    public DbTemporalTypeHandler(IEnumerable<string>? parameterFormats = null, IEnumerable<string>? parsingFormats = null)
     {
         _parameterFormats = parameterFormats ?? DbFormats.Temporal;
         _parsingFormats = parsingFormats ?? DbFormats.Temporal;
