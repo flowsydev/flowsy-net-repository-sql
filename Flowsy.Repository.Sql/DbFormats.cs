@@ -6,7 +6,32 @@ public static class DbFormats
         new []
         {
             "yyyy-MM-dd",
-            "MM/dd/yyyy"
+            "yy-MM-dd",
+            "yyyy-M-d",
+            "yy-M-d",
+            "MM/dd/yyyy",
+            "MM/dd/yy",
+            "M/d/yyyy",
+            "M/d/yy",
+        };
+    
+    public static readonly IEnumerable<string> TimeOnly = 
+        new []
+        {
+            "H:mm:ss",
+            "H:mm:ss.f",
+            "H:mm:ss.ff",
+            "H:mm:ss.fff",
+            "H:mm:ss.ffff",
+            "H:mm:ss.fffff",
+            "H:mm:ss.ffffff",
+            "h:mm:ss tt",
+            "h:mm:ss.f tt",
+            "h:mm:ss.ff tt",
+            "h:mm:ss.fff tt",
+            "h:mm:ss.ffff tt",
+            "h:mm:ss.fffff tt",
+            "h:mm:ss.ffffff tt"
         };
 
     public static readonly IEnumerable<string> DateTime =
@@ -24,5 +49,5 @@ public static class DbFormats
             "yyyy-MM-dd H:mm:ss.ffffff"
         };
 
-    public static IEnumerable<string> Temporal => DateOnly.Concat(DateTime);
+    public static IEnumerable<string> Temporal => DateOnly.Concat(TimeOnly).Concat(DateTime);
 }
