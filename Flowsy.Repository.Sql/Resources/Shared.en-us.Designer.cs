@@ -62,5 +62,17 @@ namespace Flowsy.Repository.Sql.Resources {
                 return ResourceManager.GetString("NoConnectionConfigurationProvided", resourceCulture);
             }
         }
+        
+        internal static string InvalidValueForParameter {
+            get {
+                return ResourceManager.GetString("InvalidValueForParameter", resourceCulture);
+            }
+        }
+        
+        internal static string CouldNotParseValue {
+            get {
+                return ResourceManager.GetString("CouldNotParseValue", resourceCulture);
+            }
+        }
     }
 }

@@ -27,4 +27,10 @@
     <data name="NoConnectionConfigurationProvided" xml:space="preserve">
         <value>No connection configuration was provided.</value>
     </data>
+    <data name="InvalidValueForParameter" xml:space="preserve">
+        <value>Invalid value for parameter</value>
+    </data>
+    <data name="CouldNotParseValue" xml:space="preserve">
+        <value>Could not parse value</value>
+    </data>
 </root>
