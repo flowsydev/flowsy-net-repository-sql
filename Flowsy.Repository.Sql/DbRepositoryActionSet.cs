@@ -2,29 +2,32 @@ namespace Flowsy.Repository.Sql;
 
 public class DbRepositoryActionSet
 {
-    public static DbRepositoryActionSet Default { get; set; } = new (
-        DbRepositoryAction.Default.Create,
-        DbRepositoryAction.Default.Update,
-        DbRepositoryAction.Default.Patch,
-        DbRepositoryAction.Default.DeleteById,
-        DbRepositoryAction.Default.DeleteMany,
-        DbRepositoryAction.Default.GetById,
-        DbRepositoryAction.Default.GetByIdExtended,
-        DbRepositoryAction.Default.GetByIdExtendedTranslated,
-        DbRepositoryAction.Default.GetByIdTranslated,
-        DbRepositoryAction.Default.GetOne,
-        DbRepositoryAction.Default.GetOneExtended,
-        DbRepositoryAction.Default.GetOneExtendedTranslated,
-        DbRepositoryAction.Default.GetOneTranslated,
-        DbRepositoryAction.Default.GetMany,
-        DbRepositoryAction.Default.GetManyPaged,
-        DbRepositoryAction.Default.GetManyExtended,
-        DbRepositoryAction.Default.GetManyExtendedPaged,
-        DbRepositoryAction.Default.GetManyExtendedTranslated,
-        DbRepositoryAction.Default.GetManyExtendedTranslatedPaged,
-        DbRepositoryAction.Default.GetManyTranslated,
-        DbRepositoryAction.Default.GetManyTranslatedPaged
-        );
+    public static DbRepositoryActionSetBuilder CreateBuilder() => new ();
+
+    public static DbRepositoryActionSet Default { get; set; }
+        = CreateBuilder()
+            .Create(new DbRepositoryAction("Create"))
+            .Update(new DbRepositoryAction("Update"))
+            .Patch(new DbRepositoryAction("Patch"))
+            .DeleteById(new DbRepositoryAction("DeleteById"))
+            .DeleteMany(new DbRepositoryAction("DeleteMany"))
+            .GetById(new DbRepositoryAction("GetById"))
+            .GetByIdExtended(new DbRepositoryAction("GetByIdExtended"))
+            .GetByIdExtendedTranslated(new DbRepositoryAction("GetByIdExtendedTranslated"))
+            .GetByIdTranslated(new DbRepositoryAction("GetByIdTranslated"))
+            .GetOne(new DbRepositoryAction("GetOne"))
+            .GetOneExtended(new DbRepositoryAction("GetOneExtended"))
+            .GetOneExtendedTranslated(new DbRepositoryAction("GetOneExtendedTranslated"))
+            .GetOneTranslated(new DbRepositoryAction("GetOneTranslated"))
+            .GetMany(new DbRepositoryAction("GetMany"))
+            .GetManyPaged(new DbRepositoryAction("GetManyPaged"))
+            .GetManyExtended(new DbRepositoryAction("GetManyExtended"))
+            .GetManyExtendedPaged(new DbRepositoryAction("GetManyExtendedPaged"))
+            .GetManyExtendedTranslated(new DbRepositoryAction("GetManyExtendedTranslated"))
+            .GetManyExtendedTranslatedPaged(new DbRepositoryAction("GetManyExtendedTranslatedPaged"))
+            .GetManyTranslated(new DbRepositoryAction("GetManyTranslated"))
+            .GetManyTranslatedPaged(new DbRepositoryAction("GetManyTranslatedPaged"))
+            .Build();
     
     /// <summary>
     /// Constructor
@@ -51,160 +54,182 @@ public class DbRepositoryActionSet
     /// <param name="getManyTranslated">Action used to get the translated version of one or more entities matching a specified filter.</param>
     /// <param name="getManyTranslatedPaged">Action used to get a page of the translated version of one or more entities matching a specified filter.</param>
     public DbRepositoryActionSet(
-        DbRepositoryAction? create = default,
-        DbRepositoryAction? update = default,
-        DbRepositoryAction? patch = default,
-        DbRepositoryAction? deleteById = default,
-        DbRepositoryAction? deleteMany = default,
+        DbRepositoryAction? create = null,
+        DbRepositoryAction? update = null,
+        DbRepositoryAction? patch = null,
+        DbRepositoryAction? deleteById = null,
+        DbRepositoryAction? deleteMany = null,
         
-        DbRepositoryAction? getById = default,
-        DbRepositoryAction? getByIdExtended = default,
-        DbRepositoryAction? getByIdExtendedTranslated = default,
-        DbRepositoryAction? getByIdTranslated = default,
+        DbRepositoryAction? getById = null,
+        DbRepositoryAction? getByIdExtended = null,
+        DbRepositoryAction? getByIdExtendedTranslated = null,
+        DbRepositoryAction? getByIdTranslated = null,
         
-        DbRepositoryAction? getOne = default,
-        DbRepositoryAction? getOneExtended = default,
-        DbRepositoryAction? getOneExtendedTranslated = default,
-        DbRepositoryAction? getOneTranslated = default,
+        DbRepositoryAction? getOne = null,
+        DbRepositoryAction? getOneExtended = null,
+        DbRepositoryAction? getOneExtendedTranslated = null,
+        DbRepositoryAction? getOneTranslated = null,
         
-        DbRepositoryAction? getMany = default,
-        DbRepositoryAction? getManyPaged = default,
-        DbRepositoryAction? getManyExtended = default,
-        DbRepositoryAction? getManyExtendedPaged = default,
-        DbRepositoryAction? getManyExtendedTranslated = default,
-        DbRepositoryAction? getManyExtendedTranslatedPaged = default,
-        DbRepositoryAction? getManyTranslated = default,
-        DbRepositoryAction? getManyTranslatedPaged = default
+        DbRepositoryAction? getMany = null,
+        DbRepositoryAction? getManyPaged = null,
+        DbRepositoryAction? getManyExtended = null,
+        DbRepositoryAction? getManyExtendedPaged = null,
+        DbRepositoryAction? getManyExtendedTranslated = null,
+        DbRepositoryAction? getManyExtendedTranslatedPaged = null,
+        DbRepositoryAction? getManyTranslated = null,
+        DbRepositoryAction? getManyTranslatedPaged = null
         )
     {
-        Create = create ?? DbRepositoryAction.Default.Create;
-        Update = update ?? DbRepositoryAction.Default.Update;
-        Patch = patch ?? DbRepositoryAction.Default.Patch;
-        DeleteById = deleteById ?? DbRepositoryAction.Default.DeleteById;
-        DeleteMany = deleteMany ?? DbRepositoryAction.Default.DeleteMany;
+        _create = create;
+        _update = update;
+        _patch = patch;
+        _deleteById = deleteById;
+        _deleteMany = deleteMany;
         
-        GetById = getById ?? DbRepositoryAction.Default.GetById;
-        GetByIdExtended = getByIdExtended ?? DbRepositoryAction.Default.GetByIdExtended;
-        GetByIdExtendedTranslated = getByIdExtendedTranslated ?? DbRepositoryAction.Default.GetByIdExtendedTranslated;
-        GetByIdTranslated = getByIdTranslated ?? DbRepositoryAction.Default.GetByIdTranslated;
+        _getById = getById;
+        _getByIdExtended = getByIdExtended;
+        _getByIdExtendedTranslated = getByIdExtendedTranslated;
+        _getByIdTranslated = getByIdTranslated;
         
-        GetOne = getOne ?? DbRepositoryAction.Default.GetOne;
-        GetOneExtended = getOneExtended ?? DbRepositoryAction.Default.GetOneExtended;
-        GetOneExtendedTranslated = getOneExtendedTranslated ?? DbRepositoryAction.Default.GetOneExtendedTranslated;
-        GetOneTranslated = getOneTranslated ?? DbRepositoryAction.Default.GetOneTranslated;
+        _getOne = getOne;
+        _getOneExtended = getOneExtended;
+        _getOneExtendedTranslated = getOneExtendedTranslated;
+        _getOneTranslated = getOneTranslated;
 
-        GetMany = getMany ?? DbRepositoryAction.Default.GetMany;
-        GetManyPaged = getManyPaged ?? DbRepositoryAction.Default.GetManyPaged;
-        GetManyExtended = getManyExtended ?? DbRepositoryAction.Default.GetManyExtended;
-        GetManyExtendedPaged = getManyExtendedPaged ?? DbRepositoryAction.Default.GetManyExtendedPaged;
-        GetManyExtendedTranslated = getManyExtendedTranslated ?? DbRepositoryAction.Default.GetManyExtendedTranslated;
-        GetManyExtendedTranslatedPaged = getManyExtendedTranslatedPaged ?? DbRepositoryAction.Default.GetManyExtendedTranslatedPaged;
-        GetManyTranslated = getManyTranslated ?? DbRepositoryAction.Default.GetManyTranslated;
-        GetManyTranslatedPaged = getManyTranslatedPaged ?? DbRepositoryAction.Default.GetManyTranslatedPaged;
+        _getMany = getMany;
+        _getManyPaged = getManyPaged;
+        _getManyExtended = getManyExtended;
+        _getManyExtendedPaged = getManyExtendedPaged;
+        _getManyExtendedTranslated = getManyExtendedTranslated;
+        _getManyExtendedTranslatedPaged = getManyExtendedTranslatedPaged;
+        _getManyTranslated = getManyTranslated;
+        _getManyTranslatedPaged = getManyTranslatedPaged;
     }
+    
+    private DbRepositoryAction? _create;
+    private DbRepositoryAction? _update;
+    private DbRepositoryAction? _patch;
+    private DbRepositoryAction? _deleteById;
+    private DbRepositoryAction? _deleteMany;
+    private DbRepositoryAction? _getById;
+    private DbRepositoryAction? _getByIdExtended;
+    private DbRepositoryAction? _getByIdExtendedTranslated;
+    private DbRepositoryAction? _getByIdTranslated;
+    private DbRepositoryAction? _getOne;
+    private DbRepositoryAction? _getOneExtended;
+    private DbRepositoryAction? _getOneExtendedTranslated;
+    private DbRepositoryAction? _getOneTranslated;
+    private DbRepositoryAction? _getMany;
+    private DbRepositoryAction? _getManyPaged;
+    private DbRepositoryAction? _getManyExtended;
+    private DbRepositoryAction? _getManyExtendedPaged;
+    private DbRepositoryAction? _getManyExtendedTranslated;
+    private DbRepositoryAction? _getManyExtendedTranslatedPaged;
+    private DbRepositoryAction? _getManyTranslated;
+    private DbRepositoryAction? _getManyTranslatedPaged;
 
     /// <summary>
     /// Action used to create a new entity.
     /// </summary>
-    public DbRepositoryAction Create { get; set; }
+    public DbRepositoryAction Create { get => _create ?? Default.Create; set => _create = value; }
 
     /// <summary>
     /// Action used to update an entity.
     /// </summary>
-    public DbRepositoryAction Update { get; set; }
+    public DbRepositoryAction Update { get => _update ?? Default.Update; set => _update = value; }
 
     /// <summary>
     /// Action used to patch an entity.
     /// </summary>
-    public DbRepositoryAction Patch { get; set; }
+    public DbRepositoryAction Patch { get => _patch ?? Default.Patch; set => _patch = value; }
 
     /// <summary>
     /// Action used to delete an entity.
     /// </summary>
-    public DbRepositoryAction DeleteById { get; set; }
+    public DbRepositoryAction DeleteById { get => _deleteById ?? Default.DeleteById; set => _deleteById = value; }
 
     /// <summary>
     /// Action used to delete multiple entities at once.
     /// </summary>
-    public DbRepositoryAction DeleteMany { get; set; }
+    public DbRepositoryAction DeleteMany { get => _deleteMany ?? Default.DeleteMany; set => _deleteMany = value; }
 
     /// <summary>
     /// Action used to get an entity identified by a given value.
     /// </summary>
-    public DbRepositoryAction GetById { get; set; }
+    public DbRepositoryAction GetById { get => _getById ?? Default.GetById; set => _getById = value; }
 
     /// <summary>
     /// Action used to get the extended version of an entity identified by a given value.
     /// </summary>
-    public DbRepositoryAction GetByIdExtended { get; set; }
+    public DbRepositoryAction GetByIdExtended { get => _getByIdExtended ?? Default.GetByIdExtended; set => _getByIdExtended = value; }
 
     /// <summary>
     /// Action used to get the extended and translated version of an entity identified by a given value.
     /// </summary>
-    public DbRepositoryAction GetByIdExtendedTranslated { get; set; }
+    public DbRepositoryAction GetByIdExtendedTranslated { get => _getByIdExtendedTranslated ?? Default.GetByIdExtendedTranslated; set => _getByIdExtendedTranslated = value; }
 
     /// <summary>
     /// Action used to get the translated version of an entity identified by a given value.
     /// </summary>
-    public DbRepositoryAction GetByIdTranslated { get; set; }
+    public DbRepositoryAction GetByIdTranslated { get => _getByIdTranslated ?? Default.GetByIdTranslated; set => _getByIdTranslated = value; }
 
     /// <summary>
     /// Action used to get a single entity matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetOne { get; set; }
+    public DbRepositoryAction GetOne { get => _getOne ?? Default.GetOne; set => _getOne = value; }
 
     /// <summary>
     /// Action used to get the extended version of a single entity matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetOneExtended { get; set; }
+    public DbRepositoryAction GetOneExtended { get => _getOneExtended ?? Default.GetOneExtended; set => _getOneExtended = value; }
 
     /// <summary>
     /// Action used to get the extended and translated version of a single entity matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetOneExtendedTranslated { get; set; }
+    public DbRepositoryAction GetOneExtendedTranslated { get => _getOneExtendedTranslated ?? Default.GetOneExtendedTranslated; set => _getOneExtendedTranslated = value; }
 
     /// <summary>
     /// Action used to get the translated version of a single entity matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetOneTranslated { get; set; }
+    public DbRepositoryAction GetOneTranslated { get => _getOneTranslated ?? Default.GetOneTranslated; set => _getOneTranslated = value; }
 
     /// <summary>
     /// Action used to get one or more entities matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetMany { get; set; }
+    public DbRepositoryAction GetMany { get => _getMany ?? Default.GetMany; set => _getMany = value; }
 
     /// <summary>
     /// Action used to get a page of one or more entities matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetManyPaged { get; set; }
+    public DbRepositoryAction GetManyPaged { get => _getManyPaged ?? Default.GetManyPaged; set => _getManyPaged = value; }
 
     /// <summary>
     /// Action used to get the extended version of one or more entities matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetManyExtended { get; set; }
+    public DbRepositoryAction GetManyExtended { get => _getManyExtended ?? Default.GetManyExtended; set => _getManyExtended = value; }
 
     /// <summary>
     /// Action used to get a page of the extended version of one or more entities matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetManyExtendedPaged { get; set; }
+    public DbRepositoryAction GetManyExtendedPaged { get => _getManyExtendedPaged ?? Default.GetManyExtendedPaged; set => _getManyExtendedPaged = value; }
 
     /// <summary>
     /// Action used to get the extended and translated version of one or more entities matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetManyExtendedTranslated { get; set; }
+    public DbRepositoryAction GetManyExtendedTranslated { get => _getManyExtendedTranslated ?? Default.GetManyExtendedTranslated; set => _getManyExtendedTranslated = value; }
 
     /// <summary>
     /// Action used to get a page of the extended and translated version of one or more entities matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetManyExtendedTranslatedPaged { get; set; }
+    public DbRepositoryAction GetManyExtendedTranslatedPaged { get => _getManyExtendedTranslatedPaged ?? Default.GetManyExtendedTranslatedPaged; set => _getManyExtendedTranslatedPaged = value; }
 
     /// <summary>
     /// Action used to get the translated version of one or more entities matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetManyTranslated { get; set; }
+    public DbRepositoryAction GetManyTranslated { get => _getManyTranslated ?? Default.GetManyTranslated; set => _getManyTranslated = value; }
 
     /// <summary>
     /// Action used to get a page of the translated version of one or more entities matching a specified filter.
     /// </summary>
-    public DbRepositoryAction GetManyTranslatedPaged { get; set; }
+    public DbRepositoryAction GetManyTranslatedPaged { get => _getManyTranslatedPaged ?? Default.GetManyTranslatedPaged; set => _getManyTranslatedPaged = value; }
 }

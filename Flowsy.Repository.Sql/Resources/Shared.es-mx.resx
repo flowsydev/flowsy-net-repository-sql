@@ -33,4 +33,7 @@
     <data name="CouldNotParseValue" xml:space="preserve">
         <value>No se pudo convertir el valor</value>
     </data>
+    <data name="CouldNotSetValueXForParameterY" xml:space="preserve">
+        <value>No se pudo establecer el valor {0} para el parámetro {1}.</value>
+    </data>
 </root>

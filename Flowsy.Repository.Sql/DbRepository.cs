@@ -201,6 +201,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             DateTime => new DbParameterInfo(parameterName, DbType.DateTime2, null, null, value),
             DateTimeOffset dateTimeOffset => new DbParameterInfo(parameterName, DbType.DateTimeOffset, null, null, Configuration.DateTimeOffsetFormat == DbDateTimeOffsetFormat.Utc ? dateTimeOffset.UtcDateTime : dateTimeOffset.LocalDateTime),
             DateOnly => new DbParameterInfo(parameterName, DbType.Date, null, null, value),
+            TimeOnly => new DbParameterInfo(parameterName, DbType.Time, null, null, value),
             Enum e => new DbParameterInfo(parameterName, Configuration.EnumConvention.Format == DbEnumFormat.Ordinal ? ResolveEnumOrdinalType(e) : DbType.String, null, null, ResolveEnumValue(e)),
             IEnumerable<sbyte> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),
             IEnumerable<byte> enumerable => new DbParameterInfo(parameterName, null, null, null, enumerable.ToArray()),

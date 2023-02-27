@@ -5,23 +5,22 @@ namespace Flowsy.Repository.Sql;
 /// </summary>
 public class DbRepositoryConfiguration
 {
-    private static readonly IDictionary<Type, DbRepositoryConfiguration> Configurations = new Dictionary<Type, DbRepositoryConfiguration>();
+    /// <summary>
+    /// Creates a new DbRepositoryConfigurationBuilder to set repository configurations 
+    /// </summary>
+    /// <returns></returns>
+    public static DbRepositoryConfigurationBuilder Build() => new ();
     
     /// <summary>
     /// Holds the default configuration for repositories.
     /// </summary>
-    public static DbRepositoryConfiguration Default { get; set; } = new();
+    internal static DbRepositoryConfiguration Default { get; set; } = new();
     
     /// <summary>
-    /// Registers a configuration associated to a specific repository type.
+    /// Holds configurations for specific repository types.
     /// </summary>
-    /// <param name="repositoryType">The repository type.</param>
-    /// <param name="configuration">The repository configuration.</param>
-    public static void Register(Type repositoryType, DbRepositoryConfiguration configuration)
-    {
-        Configurations[repositoryType] = configuration;
-    }
-    
+    internal static IDictionary<Type, DbRepositoryConfiguration> Configurations { get; private set; } = new Dictionary<Type, DbRepositoryConfiguration>();
+
     /// <summary>
     /// Gets the configuration registered for a type of repository or the Default instance if none was found.
     /// </summary>

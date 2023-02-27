@@ -26,7 +26,7 @@ public static class AssemblyExtensions
     /// The entity property names will compared using this naming convention in order to match the corresponding table column.
     /// </param>
     /// <returns>The assembly.</returns>
-    public static Assembly RegisterSqlColumnMapping(
+    public static Assembly RegisterDatabaseColumnMapping(
         this Assembly assembly,
         NamingConvention columnNamingConvention
         )
@@ -45,10 +45,10 @@ public static class AssemblyExtensions
     /// The convention applied in the database to name table columns.
     /// The entity property names will compared using this naming convention in order to match the corresponding table column.
     /// </param>
-    public static void RegisterSqlColumnMapping(this IEnumerable<Assembly> assemblies, NamingConvention columnNamingConvention)
+    public static void RegisterDatabaseColumnMapping(this IEnumerable<Assembly> assemblies, NamingConvention columnNamingConvention)
     {
         foreach (var assembly in assemblies)
-            assembly.RegisterSqlColumnMapping(columnNamingConvention);
+            assembly.RegisterDatabaseColumnMapping(columnNamingConvention);
     }
     
     /// <summary>
@@ -59,7 +59,7 @@ public static class AssemblyExtensions
     /// A function that dynamically determines the entity property to be matched to the given column. 
     /// </param>
     /// <returns>The assembly.</returns>
-    public static Assembly RegisterSqlColumnMapping(
+    public static Assembly RegisterDatabaseColumnMapping(
         this Assembly assembly,
         Func<Type, string, PropertyInfo?> mapColumn
         )
@@ -77,12 +77,12 @@ public static class AssemblyExtensions
     /// <param name="mapColumn">
     /// A function that dynamically determines the entity property to be matched to the given column. 
     /// </param>
-    public static void RegisterSqlColumnMapping(
+    public static void RegisterDatabaseColumnMapping(
         this IEnumerable<Assembly> assemblies,
         Func<Type, string, PropertyInfo?> mapColumn
         )
     {
         foreach (var assembly in assemblies)
-            assembly.RegisterSqlColumnMapping(mapColumn);
+            assembly.RegisterDatabaseColumnMapping(mapColumn);
     }
 }

@@ -11,7 +11,8 @@ These conventions can be customized and set as the default values for all the re
 
 ## Key Concepts
 * A repository handles a single type of entity.
-* A repository expects certain stored routines to exist to perform actions on the underlying database.
+* A repository can perform some named actions on the entities stored in the underlying database: Create, Update, Patch, GetById, etc.
+* A repository expects certain stored routines to exist in order to perform its actions on the underlying database.
 * A repository will determine the name of the routines to execute based on the name of the entity and certain configurable naming conventions.
 * The DbRepository class is intended to be the base class of the repositories needed by the application.
   * It implements the basic functionality to execute queries.
@@ -23,30 +24,72 @@ These conventions can be customized and set as the default values for all the re
 ## Quick Start
 
 ## 1. Configuration
-The simplest way to configure all the repositories at once is to set the Default property of DbRepositoryConfiguration.
+The simplest way to configure all the conventions at once is to call the DbRepositoryConfiguration.Build method.
 The only requirement would be to keep the same naming conventions throughout all of our database objects.
 ```csharp
-DbRepositoryConfiguration.Default = new DbRepositoryConfiguration(
-    connectionKey: "Default", // The configuration to establish database connections will be resolved by a key named "Default"
-    schemaName: "public", // The stored routines are in the 'public' schema
-    resolveIdentityPropertyName: entityType => $"{entityType.Name}Id", // Customer -> CustomerId
-    autoIdentity: true, // Auto increment primary keys
-    routineConvention: new DbRoutineConvention(DbRoutineType.StoredFunction, NamingConvention.LowerSnakeCase, "fn_", string.Empty), // fn_ prefix for stored routines
-    parameterConvention: new DbConvention(NamingConvention.LowerSnakeCase, "p_", string.Empty), // p_ prefix for stored routine parameters
-    enumConvention: new DbEnumConvention(DbEnumFormat.Name, NamingConvention.PascalCase) // Use the string representation instead of the ordinal value for enums when executing queries
-    );
+DbRepositoryConfiguration
+  .Build()
+  .Default(new DbRepositoryConfiguration(
+      connectionKey: "Default", // The configuration to establish database connections will be resolved by a key named "Default"
+      schemaName: "public", // The stored routines are in the 'public' schema
+      resolveIdentityPropertyName: entityType => $"{entityType.Name}Id", // Customer -> CustomerId
+      autoIdentity: true, // Auto increment primary keys
+      routineConvention: new DbRoutineConvention(DbRoutineType.StoredFunction, NamingConvention.LowerSnakeCase, "fn_", string.Empty), // fn_ prefix for stored routines
+      parameterConvention: new DbRoutineParameterConvention(
+          NamingConvention.LowerSnakeCase, // Parameter names in lower snake case
+          "p_", // p_ prefix for stored routine parameters
+          string.Empty, // No suffix
+          (routineName, parameterName, value, routineType) => routineType switch
+          {
+              DbRoutineType.StoredFunction => $"{parameterName} => @{parameterName}",
+              _ => $"@{parameterName}"
+          }
+      ),
+      enumConvention: new DbEnumConvention(DbEnumFormat.Name, NamingConvention.PascalCase), // Use the string representation instead of the ordinal value for enums when executing queries
+      actions: DbRepositoryActionSet
+        .CreateBuilder()
+        .Create(new DbRepositoryAction("Insert")) // The action used to create entities will be named 'Insert' instead of the 'Create'. Stored function example: fn_customer_insert (instead of fn_customer_create)
+        // If not configured, all other actions will use a default name
+        .Build()
+  ))
+  .ForType(typeof(MyRepository), new DbRepositoryConfiguration( /* ... */)) // Configuration for a specific type of repository
+  .WithColumnMapping(NamingConvention.LowerSnakeCase) // Database column names in lower snake case
+  .WithDateOnlyTypeHandlers() // Support for date-only columns
+  .WithTimeOnlyTypeHandlers(); // Support for time-only columns
 ```
-
-If required, each repository can be configured independently by calling:
-```csharp
-DbRepositoryConfiguration.Register(typeof(MyRepository), new DbRepositoryConfiguration(/* ... */));
-```
-All the parameters not set in the DbRepositoryConfiguration constructor for a specific repository type, will fallback to the settings of DbRepositoryConfiguration.Default.
+All the parameters not set in the DbRepositoryConfiguration constructor for a specific repository type, will fallback to the default settings.
 
 At a high level, the stored routines to be invoked by the repositories are represented by instances of DbRepositoryAction.
-The DbRepositoryConfiguration class has a set of properties to configure the built-in actions supported by DbRepository.
+The DbRepositoryActionSet class has a property named Default that will be used as a fallback when no conventions are set for a specific action.
 
- 
+The DbRepositoryActionSet.Default property is set as follows:
+```csharp
+public static DbRepositoryActionSet Default { get; }
+  = CreateBuilder()
+      .Create(new DbRepositoryAction("Create"))
+      .Update(new DbRepositoryAction("Update"))
+      .Patch(new DbRepositoryAction("Patch"))
+      .DeleteById(new DbRepositoryAction("DeleteById"))
+      .DeleteMany(new DbRepositoryAction("DeleteMany"))
+      .GetById(new DbRepositoryAction("GetById"))
+      .GetByIdExtended(new DbRepositoryAction("GetByIdExtended"))
+      .GetByIdExtendedTranslated(new DbRepositoryAction("GetByIdExtendedTranslated"))
+      .GetByIdTranslated(new DbRepositoryAction("GetByIdTranslated"))
+      .GetOne(new DbRepositoryAction("GetOne"))
+      .GetOneExtended(new DbRepositoryAction("GetOneExtended"))
+      .GetOneExtendedTranslated(new DbRepositoryAction("GetOneExtendedTranslated"))
+      .GetOneTranslated(new DbRepositoryAction("GetOneTranslated"))
+      .GetMany(new DbRepositoryAction("GetMany"))
+      .GetManyPaged(new DbRepositoryAction("GetManyPaged"))
+      .GetManyExtended(new DbRepositoryAction("GetManyExtended"))
+      .GetManyExtendedPaged(new DbRepositoryAction("GetManyExtendedPaged"))
+      .GetManyExtendedTranslated(new DbRepositoryAction("GetManyExtendedTranslated"))
+      .GetManyExtendedTranslatedPaged(new DbRepositoryAction("GetManyExtendedTranslatedPaged"))
+      .GetManyTranslated(new DbRepositoryAction("GetManyTranslated"))
+      .GetManyTranslatedPaged(new DbRepositoryAction("GetManyTranslatedPaged"))
+      .Build();
+``` 
+The action names will be translated automatically to stored routine names using the configured naming conventions.
 
 
 ## 2. Domain Modeling
