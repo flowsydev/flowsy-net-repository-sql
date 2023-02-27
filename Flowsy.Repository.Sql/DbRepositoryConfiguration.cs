@@ -14,7 +14,7 @@ public class DbRepositoryConfiguration
     /// <summary>
     /// Holds the default configuration for repositories.
     /// </summary>
-    internal static DbRepositoryConfiguration Default { get; set; } = new();
+    public static DbRepositoryConfiguration Default { get; internal set; } = new();
     
     /// <summary>
     /// Holds configurations for specific repository types.
