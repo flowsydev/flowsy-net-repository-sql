@@ -53,7 +53,7 @@ DbRepositoryConfiguration
         .Build()
   ))
   .ForType(typeof(MyRepository), new DbRepositoryConfiguration( /* ... */)) // Configuration for a specific type of repository
-  .WithColumnMapping(NamingConvention.LowerSnakeCase) // Database column names in lower snake case
+  .WithColumnMapping(NamingConvention.LowerSnakeCase, typeof(MyEntity).Assembly) // Database column names in lower snake case
   .WithDateOnlyTypeHandlers() // Support for date-only columns
   .WithTimeOnlyTypeHandlers(); // Support for time-only columns
 ```
