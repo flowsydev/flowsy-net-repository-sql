@@ -23,7 +23,7 @@ public class DbRepositoryConfigurationBuilder
     /// <param name="configuration">The repository configuration.</param>
     public DbRepositoryConfigurationBuilder ForType(Type repositoryType, DbRepositoryConfiguration configuration)
     {
-        DbRepositoryConfiguration.Configurations[repositoryType] = configuration;
+        DbRepositoryConfiguration.ForType(repositoryType, configuration);
         return this;
     }
 

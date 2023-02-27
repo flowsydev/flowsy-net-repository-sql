@@ -19,7 +19,17 @@ public class DbRepositoryConfiguration
     /// <summary>
     /// Holds configurations for specific repository types.
     /// </summary>
-    internal static IDictionary<Type, DbRepositoryConfiguration> Configurations { get; private set; } = new Dictionary<Type, DbRepositoryConfiguration>();
+    private static readonly IDictionary<Type, DbRepositoryConfiguration> Configurations = new Dictionary<Type, DbRepositoryConfiguration>();
+    
+    /// <summary>
+    /// Registers a configuration associated to a specific repository type.
+    /// </summary>
+    /// <param name="repositoryType">The repository type.</param>
+    /// <param name="configuration">The repository configuration.</param>
+    public static void ForType(Type repositoryType, DbRepositoryConfiguration configuration)
+    {
+        Configurations[repositoryType] = configuration;
+    }
 
     /// <summary>
     /// Gets the configuration registered for a type of repository or the Default instance if none was found.
