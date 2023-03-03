@@ -278,6 +278,25 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// </summary>
     /// <param name="sql">The SQL statement or stored routine name.</param>
     /// <param name="param">An object with properties used to generate the parameters for the query.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <typeparam name="T">The type of entity to return.</typeparam>
+    /// <returns>A list of entities.</returns>
+    protected virtual Task<IEnumerable<T>> QueryAsync<T>(
+        string sql,
+        dynamic param,
+        CancellationToken cancellationToken
+        ) => 
+        QueryAsync<T>(
+            sql,
+            ((object) param).ToReadonlyDictionary(),
+            cancellationToken
+        );
+
+    /// <summary>
+    /// Executes a query against the underlying data store expecting to get a list of entities.
+    /// </summary>
+    /// <param name="sql">The SQL statement or stored routine name.</param>
+    /// <param name="param">An object with properties used to generate the parameters for the query.</param>
     /// <param name="commandType">The command type.</param>
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <typeparam name="T">The type of entity to return.</typeparam>
@@ -292,6 +311,26 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             sql,
             ((object) param).ToReadonlyDictionary(),
             commandType,
+            cancellationToken
+        );
+    
+    /// <summary>
+    /// Executes a query against the underlying data store expecting to get a list of entities.
+    /// </summary>
+    /// <param name="sql">The SQL statement or stored routine name.</param>
+    /// <param name="properties">The property names and values of an object to generate the parameters for the query.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <typeparam name="T">The type of entity to return.</typeparam>
+    /// <returns>A list of entities.</returns>
+    protected virtual Task<IEnumerable<T>> QueryAsync<T>(
+        string sql,
+        IReadOnlyDictionary<string, object?> properties,
+        CancellationToken cancellationToken
+        ) =>
+        QueryAsync<T>(
+            sql,
+            ToDynamicParameters(properties),
+            ResolveRoutineCommandType(),
             cancellationToken
         );
     
@@ -316,6 +355,21 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             commandType,
             cancellationToken
         );
+
+    /// <summary>
+    /// Executes a query against the underlying data store expecting to get a list of entities.
+    /// </summary>
+    /// <param name="sql">The SQL statement or stored routine name.</param>
+    /// <param name="param">The parameters for the query.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <typeparam name="T">The type of entity to return.</typeparam>
+    /// <returns>A list of entities.</returns>
+    protected virtual Task<IEnumerable<T>> QueryAsync<T>(
+        string sql,
+        DynamicParameters? param,
+        CancellationToken cancellationToken
+        )
+        => QueryAsync<T>(sql, param, ResolveRoutineCommandType(), cancellationToken);
 
     /// <summary>
     /// Executes a query against the underlying data store expecting to get a list of entities.
@@ -377,6 +431,26 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// </summary>
     /// <param name="sql">The SQL statement or stored routine name.</param>
     /// <param name="param">An object with properties used to generate the parameters for the query.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <typeparam name="T">The type of entity to return.</typeparam>
+    /// <returns>A single entity or a null value if not found.</returns>
+    protected virtual Task<T?> QueryFirstOrDefaultAsync<T>(
+        string sql,
+        dynamic param,
+        CancellationToken cancellationToken
+        ) =>
+        QueryFirstOrDefaultAsync<T>(
+            sql,
+            ((object) param).ToReadonlyDictionary(),
+            ResolveRoutineCommandType(),
+            cancellationToken
+        );
+
+    /// <summary>
+    /// Executes a query against the underlying data store expecting to get a single entity.
+    /// </summary>
+    /// <param name="sql">The SQL statement or stored routine name.</param>
+    /// <param name="param">An object with properties used to generate the parameters for the query.</param>
     /// <param name="commandType">The command type.</param>
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <typeparam name="T">The type of entity to return.</typeparam>
@@ -391,6 +465,26 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             sql,
             ((object) param).ToReadonlyDictionary(),
             commandType,
+            cancellationToken
+        );
+
+    /// <summary>
+    /// Executes a query against the underlying data store expecting to get a single entity.
+    /// </summary>
+    /// <param name="sql">The SQL statement or stored routine name.</param>
+    /// <param name="properties">The property names and values of an object to generate the parameters for the query.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <typeparam name="T">The type of entity to return.</typeparam>
+    /// <returns>A single entity or a null value if not found.</returns>
+    protected virtual Task<T?> QueryFirstOrDefaultAsync<T>(
+        string sql,
+        IReadOnlyDictionary<string, object?> properties,
+        CancellationToken cancellationToken
+        ) =>
+        QueryFirstOrDefaultAsync<T>(
+            sql,
+            ToDynamicParameters(properties),
+            ResolveRoutineCommandType(),
             cancellationToken
         );
 
@@ -415,6 +509,22 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             commandType,
             cancellationToken
         );
+
+
+    /// <summary>
+    /// Executes a query against the underlying data store expecting to get a single entity.
+    /// </summary>
+    /// <param name="sql">The SQL statement or stored routine name.</param>
+    /// <param name="param">The parameters for the query.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <typeparam name="T">The type of entity to return.</typeparam>
+    /// <returns>A single entity or a null value if not found.</returns>
+    protected virtual Task<T?> QueryFirstOrDefaultAsync<T>(
+        string sql,
+        DynamicParameters? param,
+        CancellationToken cancellationToken
+        )
+        => QueryFirstOrDefaultAsync<T>(sql, param, ResolveRoutineCommandType(), cancellationToken);
 
     
     /// <summary>
@@ -471,6 +581,24 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
         CancellationToken cancellationToken
         ) =>
         ExecuteAsync(sql, null as DynamicParameters, commandType, cancellationToken);
+    
+    /// <summary>
+    /// Executes a query against the underlying data store and returns the number of affected entities.
+    /// </summary>
+    /// <param name="sql">The SQL statement or stored routine name.</param>
+    /// <param name="param">An object with properties used to generate the parameters for the query.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <returns>The number of affected entities.</returns>
+    protected virtual Task<int> ExecuteAsync(
+        string sql,
+        dynamic param,
+        CancellationToken cancellationToken
+        ) =>
+        ExecuteAsync(
+            sql,
+            ((object) param).ToReadonlyDictionary(),
+            cancellationToken
+        );
 
     /// <summary>
     /// Executes a query against the underlying data store and returns the number of affected entities.
@@ -490,6 +618,25 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             sql,
             ((object) param).ToReadonlyDictionary(),
             commandType,
+            cancellationToken
+        );
+
+    /// <summary>
+    /// Executes a query against the underlying data store and returns the number of affected entities.
+    /// </summary>
+    /// <param name="sql">The SQL statement or stored routine name.</param>
+    /// <param name="properties">The property names and values of an object to generate the parameters for the query.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <returns>The number of affected entities.</returns>
+    protected virtual Task<int> ExecuteAsync(
+        string sql,
+        IReadOnlyDictionary<string, object?> properties,
+        CancellationToken cancellationToken
+        ) =>
+        ExecuteAsync(
+            sql,
+            ToDynamicParameters(properties),
+            ResolveRoutineCommandType(),
             cancellationToken
         );
 
