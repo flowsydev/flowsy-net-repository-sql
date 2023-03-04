@@ -667,6 +667,21 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// </summary>
     /// <param name="sql">The SQL statement or stored routine name.</param>
     /// <param name="param">The parameters for the query.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <returns>The number of affected entities.</returns>
+    protected virtual Task<int> ExecuteAsync(
+        string sql,
+        DynamicParameters? param,
+        CancellationToken cancellationToken
+        )
+        => ExecuteAsync(sql, param, ResolveRoutineCommandType(), cancellationToken);
+
+
+    /// <summary>
+    /// Executes a query against the underlying data store and returns the number of affected entities.
+    /// </summary>
+    /// <param name="sql">The SQL statement or stored routine name.</param>
+    /// <param name="param">The parameters for the query.</param>
     /// <param name="commandType">The command type.</param>
     /// <param name="cancellationToken">The cancellation token for the query.</param>
     /// <returns>The number of affected entities.</returns>
