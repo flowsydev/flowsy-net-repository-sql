@@ -37,9 +37,19 @@ public static class DbFormats
     public static readonly IEnumerable<string> DateTime =
         new []
         {
-            "M/d/yyyy h:mm:ss tt",
+            "dd/MM/yyyy h:mm:ss tt",
             "dd/MM/yyyy H:mm:ss",
+            
+            "d/M/yyyy h:mm:ss tt",
+            "d/M/yyyy H:mm:ss",
+            
+            "M/d/yyyy h:mm:ss tt",
+            "M/d/yyyy H:mm:ss",
+            
+            "MM/dd/yyyy h:mm:ss tt",
             "MM/dd/yyyy H:mm:ss",
+            
+            "yyyy-MM-dd h:mm:ss tt",
             "yyyy-MM-dd H:mm:ss",
             "yyyy-MM-dd H:mm:ss.f",
             "yyyy-MM-dd H:mm:ss.ff",
