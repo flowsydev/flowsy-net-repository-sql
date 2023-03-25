@@ -161,7 +161,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// Creates a DynamicParameters instance from the properties of the given object.
     /// </summary>
     /// <param name="obj">The object to read the properties from.</param>
-    /// <returns></returns>
+    /// <returns>An instance of DynamicParameters.</returns>
     protected virtual DynamicParameters ToDynamicParameters(object obj)
         => ToDynamicParameters(obj.ToReadonlyDictionary());
     
@@ -169,7 +169,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// Creates a DynamicParameters instance from the values of the given dictionary.
     /// </summary>
     /// <param name="properties">The property names and values of an object.</param>
-    /// <returns></returns>
+    /// <returns>An instance of DynamicParameters.</returns>
     protected virtual DynamicParameters ToDynamicParameters(IReadOnlyDictionary<string, object?> properties)
     {
         var parameters = new DynamicParameters();
@@ -188,7 +188,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// </summary>
     /// <param name="sourcePropertyName">The name of property.</param>
     /// <param name="value">The value of the property.</param>
-    /// <returns>An instance of DbParameterInfo</returns>
+    /// <returns>An instance of DbParameterInfo.</returns>
     protected virtual DbParameterInfo BuildParameter(string sourcePropertyName, object? value)
     {
         var parameterName = ResolveRoutineParameterName(sourcePropertyName);
