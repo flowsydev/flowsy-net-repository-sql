@@ -271,7 +271,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
         CommandType commandType,
         CancellationToken cancellationToken
         ) =>
-        QueryAsync<T>(sql, null as DynamicParameters, commandType, cancellationToken);
+        QueryAsync<T>(sql, new Dictionary<string, object?>(), commandType, cancellationToken);
 
     /// <summary>
     /// Executes a query against the underlying data store expecting to get a list of entities.
@@ -289,6 +289,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
         QueryAsync<T>(
             sql,
             ((object) param).ToReadonlyDictionary(),
+            ResolveRoutineCommandType(),
             cancellationToken
         );
 
@@ -329,7 +330,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
         ) =>
         QueryAsync<T>(
             sql,
-            ToDynamicParameters(properties),
+            properties,
             ResolveRoutineCommandType(),
             cancellationToken
         );
@@ -424,7 +425,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
         CommandType commandType,
         CancellationToken cancellationToken
         )
-        => QueryFirstOrDefaultAsync<T>(sql, null as DynamicParameters, commandType, cancellationToken);
+        => QueryFirstOrDefaultAsync<T>(sql, new Dictionary<string, object?>(), commandType, cancellationToken);
 
     /// <summary>
     /// Executes a query against the underlying data store expecting to get a single entity.
@@ -483,7 +484,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
         ) =>
         QueryFirstOrDefaultAsync<T>(
             sql,
-            ToDynamicParameters(properties),
+            properties,
             ResolveRoutineCommandType(),
             cancellationToken
         );
