@@ -1,3 +1,4 @@
+using System.Data;
 using System.Reflection;
 using Dapper;
 using Flowsy.Core;
@@ -43,17 +44,27 @@ public class DbRepositoryConfigurationBuilder
         return this;
     }
     
-    public DbRepositoryConfigurationBuilder WithDateOnlyTypeHandlers()
+    public DbRepositoryConfigurationBuilder WithDateOnlyTypeHandlers(
+        DbType parameterType = DbType.Date,
+        string parameterFormat = "yyyy-MM-dd",
+        IEnumerable<string>? parsingFormats = null
+        )
     {
-        SqlMapper.AddTypeHandler(new DbDateOnlyTypeHandler());
-        SqlMapper.AddTypeHandler(new DbDateOnlyNullableTypeHandler());
+        var formats = parsingFormats?.ToArray();
+        SqlMapper.AddTypeHandler(new DbDateOnlyTypeHandler(parameterType, parameterFormat, formats));
+        SqlMapper.AddTypeHandler(new DbDateOnlyNullableTypeHandler(parameterType, parameterFormat, formats));
         return this;
     }
     
-    public DbRepositoryConfigurationBuilder WithTimeOnlyTypeHandlers()
+    public DbRepositoryConfigurationBuilder WithTimeOnlyTypeHandlers(
+        DbType parameterType = DbType.Time,
+        string parameterFormat = "H:mm:ss.ffffff",
+        IEnumerable<string>? parsingFormats = null
+        )
     {
-        SqlMapper.AddTypeHandler(new DbTimeOnlyTypeHandler());
-        SqlMapper.AddTypeHandler(new DbTimeOnlyNullableTypeHandler());
+        var formats = parsingFormats?.ToArray();
+        SqlMapper.AddTypeHandler(new DbTimeOnlyTypeHandler(parameterType, parameterFormat, formats));
+        SqlMapper.AddTypeHandler(new DbTimeOnlyNullableTypeHandler(parameterType, parameterFormat, formats));
         return this;
     }
 
