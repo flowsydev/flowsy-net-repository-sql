@@ -26,7 +26,7 @@ public abstract partial class DbRepository<TEntity, TEntityTranslated, TIdentity
         var criteriaDictionary = ToDictionary(criteria);
         criteriaDictionary["CultureId"] = cultureId;
 
-        var action = Configuration.Actions.GetManyExtendedTranslatedPaged;
+        var action = Configuration.Actions.GetManyTranslatedPaged;
         var param = ToDynamicParameters(criteriaDictionary);
         var results = await QueryAsync<TResult>(
             ResolveRoutineStatement($"{EntityName}{action.Name}", param),
