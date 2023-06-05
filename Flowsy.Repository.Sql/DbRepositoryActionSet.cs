@@ -4,29 +4,29 @@ public class DbRepositoryActionSet
 {
     public static DbRepositoryActionSetBuilder CreateBuilder() => new ();
 
-    public static DbRepositoryActionSet Default { get; set; }
-        = CreateBuilder()
+    public static DbRepositoryActionSet Default { get; set; } = 
+        CreateBuilder()
             .Create(new DbRepositoryAction("Create"))
             .Update(new DbRepositoryAction("Update"))
             .Patch(new DbRepositoryAction("Patch"))
             .DeleteById(new DbRepositoryAction("DeleteById"))
             .DeleteMany(new DbRepositoryAction("DeleteMany"))
-            .GetById(new DbRepositoryAction("GetSimpleById"))
-            .GetByIdTranslated(new DbRepositoryAction("GetSimpleTranslatedById"))
-            .GetByIdExtended(new DbRepositoryAction("GetExtendedById"))
-            .GetByIdExtendedTranslated(new DbRepositoryAction("GetExtendedTranslatedById"))
-            .GetOne(new DbRepositoryAction("GetOneSimple"))
-            .GetOneTranslated(new DbRepositoryAction("GetOneSimpleTranslated"))
-            .GetOneExtended(new DbRepositoryAction("GetOneExtended"))
-            .GetOneExtendedTranslated(new DbRepositoryAction("GetOneExtendedTranslated"))
-            .GetMany(new DbRepositoryAction("GetManySimple"))
-            .GetManyPaged(new DbRepositoryAction("GetManySimplePaged"))
-            .GetManyTranslated(new DbRepositoryAction("GetManySimpleTranslated"))
-            .GetManyTranslatedPaged(new DbRepositoryAction("GetManySimpleTranslatedPaged"))
-            .GetManyExtended(new DbRepositoryAction("GetManyExtended"))
-            .GetManyExtendedPaged(new DbRepositoryAction("GetManyExtendedPaged"))
-            .GetManyExtendedTranslated(new DbRepositoryAction("GetManyExtendedTranslated"))
-            .GetManyExtendedTranslatedPaged(new DbRepositoryAction("GetManyExtendedTranslatedPaged"))
+            .GetById(new DbRepositoryAction("SimGetById"))
+            .GetByIdTranslated(new DbRepositoryAction("SimTrGetById"))
+            .GetByIdExtended(new DbRepositoryAction("ExtGetById"))
+            .GetByIdExtendedTranslated(new DbRepositoryAction("ExtTrGetById"))
+            .GetOne(new DbRepositoryAction("SimGetOne"))
+            .GetOneTranslated(new DbRepositoryAction("SimTrGetOne"))
+            .GetOneExtended(new DbRepositoryAction("ExtGetOne"))
+            .GetOneExtendedTranslated(new DbRepositoryAction("ExtTrGetOne"))
+            .GetMany(new DbRepositoryAction("ExtGetMany"))
+            .GetManyPaged(new DbRepositoryAction("SimGetManyPaged"))
+            .GetManyTranslated(new DbRepositoryAction("SimTrGetMany"))
+            .GetManyTranslatedPaged(new DbRepositoryAction("SimTrGetManyPaged"))
+            .GetManyExtended(new DbRepositoryAction("ExtGetMany"))
+            .GetManyExtendedPaged(new DbRepositoryAction("ExtGetManyPaged"))
+            .GetManyExtendedTranslated(new DbRepositoryAction("ExtTrGetMany"))
+            .GetManyExtendedTranslatedPaged(new DbRepositoryAction("ExtTrGetManyPaged"))
             .Build();
     
     /// <summary>
