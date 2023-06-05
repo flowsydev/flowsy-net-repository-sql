@@ -11,7 +11,7 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/flowsydev/flowsy-net-repository-sql</RepositoryUrl>
 
-        <PackageVersion>18.2.7</PackageVersion>
+        <PackageVersion>19.0.0</PackageVersion>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
 
@@ -26,7 +26,7 @@
       <PackageReference Include="Dapper" Version="2.0.123" />
       <PackageReference Include="Flowsy.Core" Version="2.0.0" />
       <PackageReference Include="Flowsy.Localization" Version="2.0.1" />
-      <PackageReference Include="Flowsy.Repository.Core" Version="14.0.1" />
+      <PackageReference Include="Flowsy.Repository.Core" Version="15.0.0" />
     </ItemGroup>
 
     <ItemGroup>

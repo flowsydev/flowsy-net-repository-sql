@@ -36,7 +36,7 @@ public class DbUnitOfWork : IUnitOfWork
     /// <summary>
     /// Persists all the changes made during the unit of work by committing the transaction to the underlying database.
     /// </summary>
-    public void Commit()
+    public void Save()
     {
         try
         {
@@ -54,7 +54,7 @@ public class DbUnitOfWork : IUnitOfWork
     /// Asynchronously persists all the changes made during the unit of work by committing the transaction to the underlying database.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
-    public async Task CommitAsync(CancellationToken cancellationToken)
+    public async Task SaveAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -72,6 +72,25 @@ public class DbUnitOfWork : IUnitOfWork
 
             throw;
         }
+    }
+
+    public void Undo()
+    {
+        Transaction.Dispose();
+        Connection.Dispose();
+    }
+
+    public async Task UndoAsync(CancellationToken cancellationToken)
+    {
+        if (Transaction is DbTransaction dbTransaction)
+            await dbTransaction.DisposeAsync();
+        else 
+            Transaction.Dispose();
+
+        if (Connection is DbConnection dbConnection)
+            await dbConnection.DisposeAsync();
+        else
+            Connection.Dispose();
     }
 
     /// <summary>
@@ -102,8 +121,7 @@ public class DbUnitOfWork : IUnitOfWork
 
         if (disposing)
         {
-            Transaction.Dispose();
-            Connection.Dispose();
+            Undo();
         }
 
         _disposed = true;
@@ -120,15 +138,7 @@ public class DbUnitOfWork : IUnitOfWork
 
         if (disposing)
         {
-            if (Transaction is DbTransaction dbTransaction)
-                await dbTransaction.DisposeAsync();
-            else 
-                Transaction.Dispose();
-
-            if (Connection is DbConnection dbConnection)
-                await dbConnection.DisposeAsync();
-            else
-                Connection.Dispose();
+            await UndoAsync(CancellationToken.None);
         }
 
         _disposed = true;

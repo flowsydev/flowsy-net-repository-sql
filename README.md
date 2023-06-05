@@ -34,7 +34,12 @@ DbRepositoryConfiguration
       schemaName: "public", // The stored routines are in the 'public' schema
       resolveIdentityPropertyName: entityType => $"{entityType.Name}Id", // Customer -> CustomerId
       autoIdentity: true, // Auto increment primary keys
-      routineConvention: new DbRoutineConvention(DbRoutineType.StoredFunction, NamingConvention.LowerSnakeCase, "fn_", string.Empty), // fn_ prefix for stored routines
+      routineConvention: new DbRoutineConvention(
+        DbRoutineType.StoredFunction,
+        NamingConvention.LowerSnakeCase,
+        "fn_", // fn_ prefix for stored routines
+        string.Empty
+        ),
       parameterConvention: new DbRoutineParameterConvention(
           NamingConvention.LowerSnakeCase, // Parameter names in lower snake case
           "p_", // p_ prefix for stored routine parameters
@@ -48,7 +53,9 @@ DbRepositoryConfiguration
       enumConvention: new DbEnumConvention(DbEnumFormat.Name, NamingConvention.PascalCase), // Use the string representation instead of the ordinal value for enums when executing queries
       actions: DbRepositoryActionSet
         .CreateBuilder()
-        .Create(new DbRepositoryAction("Insert")) // The action used to create entities will be named 'Insert' instead of the 'Create'. Stored function example: fn_customer_insert (instead of fn_customer_create)
+        // The action used to create entities will be named 'Insert' instead of the 'Create' (default).
+        // Stored function example: fn_customer_insert (instead of fn_customer_create)
+        .Create(new DbRepositoryAction("Insert"))
         // If not configured, all other actions will use a default name
         .Build()
   ))
@@ -71,22 +78,22 @@ public static DbRepositoryActionSet Default { get; }
       .Patch(new DbRepositoryAction("Patch"))
       .DeleteById(new DbRepositoryAction("DeleteById"))
       .DeleteMany(new DbRepositoryAction("DeleteMany"))
-      .GetById(new DbRepositoryAction("GetById"))
-      .GetByIdExtended(new DbRepositoryAction("GetByIdExtended"))
-      .GetByIdExtendedTranslated(new DbRepositoryAction("GetByIdExtendedTranslated"))
-      .GetByIdTranslated(new DbRepositoryAction("GetByIdTranslated"))
-      .GetOne(new DbRepositoryAction("GetOne"))
+      .GetById(new DbRepositoryAction("GetSimpleById"))
+      .GetByIdTranslated(new DbRepositoryAction("GetSimpleTranslatedById"))
+      .GetByIdExtended(new DbRepositoryAction("GetExtendedById"))
+      .GetByIdExtendedTranslated(new DbRepositoryAction("GetExtendedTranslatedById"))
+      .GetOne(new DbRepositoryAction("GetOneSimple"))
+      .GetOneTranslated(new DbRepositoryAction("GetOneSimpleTranslated"))
       .GetOneExtended(new DbRepositoryAction("GetOneExtended"))
       .GetOneExtendedTranslated(new DbRepositoryAction("GetOneExtendedTranslated"))
-      .GetOneTranslated(new DbRepositoryAction("GetOneTranslated"))
-      .GetMany(new DbRepositoryAction("GetMany"))
-      .GetManyPaged(new DbRepositoryAction("GetManyPaged"))
+      .GetMany(new DbRepositoryAction("GetManySimple"))
+      .GetManyPaged(new DbRepositoryAction("GetManySimplePaged"))
+      .GetManyTranslated(new DbRepositoryAction("GetManySimpleTranslated"))
+      .GetManyTranslatedPaged(new DbRepositoryAction("GetManySimpleTranslatedPaged"))
       .GetManyExtended(new DbRepositoryAction("GetManyExtended"))
       .GetManyExtendedPaged(new DbRepositoryAction("GetManyExtendedPaged"))
       .GetManyExtendedTranslated(new DbRepositoryAction("GetManyExtendedTranslated"))
       .GetManyExtendedTranslatedPaged(new DbRepositoryAction("GetManyExtendedTranslatedPaged"))
-      .GetManyTranslated(new DbRepositoryAction("GetManyTranslated"))
-      .GetManyTranslatedPaged(new DbRepositoryAction("GetManyTranslatedPaged"))
       .Build();
 ``` 
 The action names will be translated automatically to stored routine names using the configured naming conventions.
