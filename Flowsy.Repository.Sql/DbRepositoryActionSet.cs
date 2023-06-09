@@ -19,7 +19,7 @@ public class DbRepositoryActionSet
             .GetOneTranslated(new DbRepositoryAction("SimTrGetOne"))
             .GetOneExtended(new DbRepositoryAction("ExtGetOne"))
             .GetOneExtendedTranslated(new DbRepositoryAction("ExtTrGetOne"))
-            .GetMany(new DbRepositoryAction("ExtGetMany"))
+            .GetMany(new DbRepositoryAction("SimGetMany"))
             .GetManyPaged(new DbRepositoryAction("SimGetManyPaged"))
             .GetManyTranslated(new DbRepositoryAction("SimTrGetMany"))
             .GetManyTranslatedPaged(new DbRepositoryAction("SimTrGetManyPaged"))
