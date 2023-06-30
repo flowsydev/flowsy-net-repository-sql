@@ -17,7 +17,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     public override async Task<TIdentity> CreateAsync<T>(T entity, CancellationToken cancellationToken)
         where T : class
     {
-        var id = await CreateAsync(entity.ToReadonlyDictionary(), cancellationToken);
+        var id = await CreateAsync(ResolveProperties(entity), cancellationToken);
 
         if (Configuration.AutoIdentity)
             entity.SetProperty(IdentityPropertyName, id);

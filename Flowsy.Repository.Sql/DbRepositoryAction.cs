@@ -27,4 +27,13 @@ public class DbRepositoryAction
     /// The name of the property within paged query results used to determine the total entity count.
     /// </summary>
     public string? TotalCountProperty { get; set; }
+
+    /// <summary>
+    /// Returns a String which represents the object instance.
+    /// </summary>
+    /// <returns>The action name.</returns>
+    public override string ToString()
+    {
+        return Name;
+    }
 }

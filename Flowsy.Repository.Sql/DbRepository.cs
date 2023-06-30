@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Data;
 using Dapper;
 using Flowsy.Core;
@@ -72,7 +73,45 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
     /// The name of the property that uniquely identifies an entity of the repository. 
     /// </summary>
     public override string IdentityPropertyName => Configuration.ResolveIdentityPropertyName(typeof(TEntity));
-    
+
+    /// <summary>
+    /// Returns a dictionary created from the properties of the given entity.
+    /// </summary>
+    /// <param name="entity">The entity.</param>
+    /// <typeparam name="T">The type of the entity.</typeparam>
+    /// <returns>The dictionary holding the property names and values of the entity.</returns>
+    protected virtual IReadOnlyDictionary<string, object?> ResolveProperties<T>(T entity)
+    {
+        var propertyDictionary = new Dictionary<string, object?>();
+        
+        switch (entity)
+        {
+            case IDictionary<string, object?> dictionary:
+            {
+                foreach (var (key, value) in dictionary)
+                    propertyDictionary[key] = value;
+
+                return propertyDictionary;
+            }
+            case IDictionary genericDictionary:
+            {
+                foreach (var key in genericDictionary.Keys.OfType<object>().Select(k => k.ToString()))
+                {
+                    if (key is null) continue;
+                    propertyDictionary[key] = genericDictionary[key];
+                }
+
+                return propertyDictionary;
+            }
+        }
+
+        var type = typeof(T);
+        foreach (var property in type.GetProperties())
+            propertyDictionary[property.Name] = property.GetValue(entity);
+        
+        return propertyDictionary;
+    }
+
     /// <summary>
     /// Resolves a stored routine name by applying the schema name, prefix, naming convention and suffix configured for the repository.  
     /// </summary>

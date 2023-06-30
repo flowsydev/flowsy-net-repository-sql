@@ -13,7 +13,7 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>The number of affected records.</returns>
     public override Task<int> UpdateAsync<T>(T entity, CancellationToken cancellationToken) where T : class
-        => UpdateAsync(entity.ToReadonlyDictionary(), cancellationToken);
+        => UpdateAsync(ResolveProperties(entity), cancellationToken);
     
     /// <summary>
     /// Updates an entitiy in the underlying data store.
