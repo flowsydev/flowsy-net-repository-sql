@@ -21,6 +21,9 @@ public class DbDateOnlyTypeHandler : DbTemporalTypeHandler<DateOnly>
 
     public override DateOnly Parse(object value)
     {
+        if (value is DateTime dateTime)
+            return DateOnly.FromDateTime(dateTime);
+        
         foreach (var format in ParsingFormats)
             if (DateOnly.TryParseExact(value.ToString(), format, out var dateOnly))
                 return dateOnly;

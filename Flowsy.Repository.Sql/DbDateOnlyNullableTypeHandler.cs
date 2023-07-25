@@ -21,6 +21,9 @@ public class DbDateOnlyNullableTypeHandler : DbTemporalTypeHandler<DateOnly?>
 
     public override DateOnly? Parse(object value)
     {
+        if (value is DateTime dateTime)
+            return DateOnly.FromDateTime(dateTime);
+        
         var stringValue = value.ToString();
         if (stringValue is null)
             return null;
