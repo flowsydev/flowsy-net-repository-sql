@@ -78,7 +78,11 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
                 );
             
             connection = GetConnection();
-            return await connection.QueryFirstOrDefaultAsync<TIdentity>((CommandDefinition) commandDefinition);
+            if (Configuration.AutoIdentity)
+                return await connection.QueryFirstOrDefaultAsync<TIdentity>((CommandDefinition) commandDefinition);
+            
+            await connection.QueryFirstOrDefaultAsync((CommandDefinition) commandDefinition);
+            return (TIdentity) properties[IdentityPropertyName]!;
         }
         catch (Exception exception)
         {
