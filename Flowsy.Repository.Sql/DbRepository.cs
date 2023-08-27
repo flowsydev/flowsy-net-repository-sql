@@ -755,4 +755,42 @@ public abstract partial class DbRepository<TEntity, TIdentity> : AbstractReposit
             throw ExceptionHandler.Translate(exception, new DbRepositoryActionContext(this, sql, param, commandType, Transaction));
         }
     }
+
+    /// <summary>
+    /// Executes a stored routine and returns the number of affected entities.
+    /// </summary>
+    /// <param name="routineSimpleName">The routine simple name (UserCreate, UserPatchEmail, UserDelete, etc.)</param>
+    /// <param name="param">The parameters for the routine.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <returns>The number of affected entities.</returns>
+    protected virtual Task<int> ExecuteRoutineAsync(
+        string routineSimpleName,
+        dynamic param,
+        CancellationToken cancellationToken
+        )
+        => ExecuteRoutineAsync(routineSimpleName, param, null, cancellationToken);
+
+    /// <summary>
+    /// Executes a stored routine and returns the number of affected entities.
+    /// </summary>
+    /// <param name="routineSimpleName">The routine simple name (UserCreate, UserPatchEmail, UserDelete, etc.)</param>
+    /// <param name="param">The parameters for the routine.</param>
+    /// <param name="routineType">The type of routine (StoredProcedure, StoredFunction).</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <returns>The number of affected entities.</returns>
+    protected virtual Task<int> ExecuteRoutineAsync(
+        string routineSimpleName,
+        dynamic param,
+        DbRoutineType? routineType,
+        CancellationToken cancellationToken
+        )
+    {
+        var dynamicParameters = ToDynamicParameters((object) param);
+        return ExecuteAsync(
+            ResolveRoutineStatement(routineSimpleName, dynamicParameters, routineType),
+            dynamicParameters,
+            ResolveRoutineCommandType(routineType),
+            cancellationToken
+        );
+    }
 }
