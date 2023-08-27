@@ -69,6 +69,46 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         => GetByIdExtendedAsync<TEntity>(id, cancellationToken);
     
     /// <summary>
+    /// Executes a stored routine expecting to get a single entity.
+    /// </summary>
+    /// <param name="routineSimpleName">The routine simple name (UserGetOne, CustomerGetOne)</param>
+    /// <param name="param">The parameters for the routine.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <typeparam name="T">The type of entity to return.</typeparam>
+    /// <returns>A single entity or a null value.</returns>
+    protected virtual Task<T?> GetOneAsync<T>(
+        string routineSimpleName,
+        dynamic param,
+        CancellationToken cancellationToken
+        ) where T : class
+        => GetOneAsync<T>(routineSimpleName, param, null, cancellationToken);
+    
+    /// <summary>
+    /// Executes a stored routine expecting to get a single entity.
+    /// </summary>
+    /// <param name="routineSimpleName">The routine simple name (UserGetOne, CustomerGetOne)</param>
+    /// <param name="param">The parameters for the routine.</param>
+    /// <param name="routineType">The type of routine (StoredProcedure, StoredFunction).</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <typeparam name="T">The type of entity to return.</typeparam>
+    /// <returns>A single entity or a null value.</returns>
+    protected virtual Task<T?> GetOneAsync<T>(
+        string routineSimpleName,
+        dynamic param,
+        DbRoutineType? routineType,
+        CancellationToken cancellationToken
+        ) where T : class
+    {
+        var dynamicParameters = ToDynamicParameters((object) param);
+        return QueryFirstOrDefaultAsync<T>(
+            ResolveRoutineStatement(routineSimpleName, dynamicParameters, routineType),
+            dynamicParameters,
+            ResolveRoutineCommandType(routineType),
+            cancellationToken
+            );
+    }
+    
+    /// <summary>
     /// Gets an entity matching the specified criteria.
     /// </summary>
     /// <param name="criteria">An object with properties to be used as criteria to find the entity.</param>
@@ -179,6 +219,46 @@ public abstract partial class DbRepository<TEntity, TIdentity> where TEntity : c
         CancellationToken cancellationToken
         )
         => GetOneExtendedAsync<TEntity>(criteria, cancellationToken);
+
+    /// <summary>
+    /// Executes a stored routine expecting to get a list of entities.
+    /// </summary>
+    /// <param name="routineSimpleName">The routine simple name (UserGetMany, CustomerGetMany)</param>
+    /// <param name="param">The parameters for the routine.</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <typeparam name="T">The type of entity to return.</typeparam>
+    /// <returns>A list of entities.</returns>
+    protected virtual Task<IEnumerable<T>> GetManyAsync<T>(
+        string routineSimpleName,
+        dynamic param,
+        CancellationToken cancellationToken
+        ) where T : class
+        => GetManyAsync<T>(routineSimpleName, param, null, cancellationToken);
+    
+    /// <summary>
+    /// Executes a stored routine expecting to get a list of entities.
+    /// </summary>
+    /// <param name="routineSimpleName">The routine simple name (UserGetMany, CustomerGetMany)</param>
+    /// <param name="param">The parameters for the routine.</param>
+    /// <param name="routineType">The type of routine (StoredProcedure, StoredFunction).</param>
+    /// <param name="cancellationToken">The cancellation token for the query.</param>
+    /// <typeparam name="T">The type of entity to return.</typeparam>
+    /// <returns>A list of entities.</returns>
+    protected virtual Task<IEnumerable<T>> GetManyAsync<T>(
+        string routineSimpleName,
+        dynamic param,
+        DbRoutineType? routineType,
+        CancellationToken cancellationToken
+        ) where T : class
+    {
+        var dynamicParameters = ToDynamicParameters((object) param);
+        return QueryAsync<T>(
+            ResolveRoutineStatement(routineSimpleName, dynamicParameters, routineType),
+            dynamicParameters,
+            ResolveRoutineCommandType(routineType),
+            cancellationToken
+           );
+    }
     
     /// <summary>
     /// Gets one or more entities matching the specified criteria.
